@@ -206,10 +206,13 @@ def get_limit():
 
 def send_email():
     import win32com.client as win32
-    outlook = win32.Dispatch('outlook.application')
+    try:
+        outlook = win32.Dispatch('Outlook.Application')
+    except:
+        outlook = win32.GetActiveObject('Outlook.Application')
     mail = outlook.CreateItem(0)
     # mail.To = 'zelinwang@microsoft.com'
-    mail.To = 'yonzhan@microsoft.com'
+    mail.To = 'yonzhan@microsoft.com;ychenu@microsoft.com'
     # mail.CC = '12345678@qq.com'
     mail.Subject = 'Issues and PRs Summary'
     mail.Body = 'This email is send by Azure cli bot automatically.'
