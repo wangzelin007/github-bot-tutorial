@@ -57,6 +57,7 @@ body:
 #                    Dependencies:
 #                    msal 1.18.0b1
 #                    azure-mgmt-resource 21.1.0b1"
+      placeholder:
       value:
       render: shell
     validations:
