@@ -4,7 +4,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        [How to report a bug](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md) here.
+        [How to report a bug](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
         [A very good example](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
   - type: input
     id: command
