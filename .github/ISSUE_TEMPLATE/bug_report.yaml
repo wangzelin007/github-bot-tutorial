@@ -1,5 +1,5 @@
-name: Azure CLI Issue Template
-description: Use this template to report any issue
+name: Azure CLI Bug Report Template
+description: Use this template to report a bug
 body:
   - type: input
       id: command
@@ -49,26 +49,26 @@ body:
       render: shell
     validations:
       required: true
-  - type: textarea
-      id: additional-context
-      attributes:
-        label: Additional context
-        description: Add any other context about the problem here.
-        placeholder: "Windows-10-10.0.19044-SP0
-                     Python 3.10.4
-                     Installer: MSI
-
-                     azure-cli 2.37.0
-
-                     Extensions:
-                     containerapp 0.3.5
-                     deploy-to-azure 0.2.0
-                     log-analytics 0.2.2
-
-                     Dependencies:
-                     msal 1.18.0b1
-                     azure-mgmt-resource 21.1.0b1"
-        value:
-        render: shell
-      validations:
-        required: true
+#  - type: textarea
+#      id: additional-context
+#      attributes:
+#        label: Additional context
+#        description: Add any other context about the problem here.
+#        placeholder: "Windows-10-10.0.19044-SP0
+#                     Python 3.10.4
+#                     Installer: MSI
+#
+#                     azure-cli 2.37.0
+#
+#                     Extensions:
+#                     containerapp 0.3.5
+#                     deploy-to-azure 0.2.0
+#                     log-analytics 0.2.2
+#
+#                     Dependencies:
+#                     msal 1.18.0b1
+#                     azure-mgmt-resource 21.1.0b1"
+#        value:
+#        render: shell
+#      validations:
+#        required: true
