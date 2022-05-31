@@ -1,4 +1,4 @@
-name: Tensorflow Issue Template
+name: Azure CLI Issue Template
 description: Use this template to report any issue
 body:
   - type: dropdown
@@ -8,62 +8,55 @@ body:
       description: What type of issue would you like to report?
       multiple: false
       options:
-        - Bug
-        - Build/Install
-        - Performance
-        - Support
-        - Feature Request
-        - Documentation Feature Request
-        - Documentation Bug
+        - Bug Report
+        - Common Feature request
+        - Service Team request
         - Others
     validations:
       required: true
   - type: markdown
     attributes:
       value: |
-        Please make sure that this is a bug. As per our [GitHub Policy](https://github.com/tensorflow/tensorflow/blob/master/ISSUES.md),we only address code/doc bugs, performance issues, feature requests and build/installation issues on GitHub.
-
-  - type: markdown
-    attributes:
-      value: |
-        You can collect some of this information using our environment capture [script](https://github.com/tensorflow/tensorflow/tree/master/tools/tf_env_collect.sh)  You can also obtain the TensorFlow version with: <br> 1. TF 1.0: `python -c "import tensorflow as tf; print(tf.GIT_VERSION, tf.VERSION)"` <br>2. TF 2.0: `python -c "import tensorflow as tf; print(tf.version.GIT_VERSION, tf.version.VERSION)"`
-
+        For Bug Report, please follow the [example](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md) here.
+        For Common Feature request, please follow the [example](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md) here.
+        For Service Team request, please follow the [example](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md) here.
   - type: dropdown
-    id: source
+    id: platform
     attributes:
-      label: Source
-      description: Tensorflow installed from
+      label: platform
+      description: Azure cli installed from
       options:
-        - source
-        - binary
+        - Windows
+        - Macos
+        - Linux
     validations:
       required: true
   - type: input
-    id: tfversion
+    id: cliversion
     attributes:
-      label: Tensorflow Version
+      label: Azure CLI Version
       description:
-      placeholder: ex,. tf 2.8
+      placeholder: ex,. tf 2.37.0
     validations:
       required: true
-  - type: dropdown
-    id: Code
-    attributes:
-      label: Custom Code
-      description:
-      options:
-        - "Yes"
-        - "No"
-    validations:
-      required: true
+#  - type: dropdown
+#    id: Code
+#    attributes:
+#      label: Custom Code
+#      description:
+#      options:
+#        - "Yes"
+#        - "No"
+#    validations:
+#      required: true
   - type: input
     id: OS
     attributes:
       label: OS Platform and Distribution
       description:
-      placeholder: e.g., Linux Ubuntu 16.04
+      placeholder: e.g., Linux Ubuntu 20.04
     validations:
-      required: false
+      required: true
   - type: input
     id: Mobile
     attributes:
