@@ -2,13 +2,13 @@ name: Azure CLI Bug Report Template
 description: Use this template to report a bug
 body:
   - type: input
-      id: command
-      attributes:
-        label: Related command
-        description:
-        placeholder: ex,. tf az vm create
-      validations:
-        required: true
+    id: command
+    attributes:
+      label: Related command
+      description:
+      placeholder: ex,. tf az vm create
+    validations:
+      required: true
   - type: textarea
     id: what-happened
     attributes:
