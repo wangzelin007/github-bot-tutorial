@@ -6,7 +6,7 @@ body:
     attributes:
       label: Related command
       description:
-      placeholder: ex,. tf az vm create
+      placeholder: e.g., `az vm create`
     validations:
       required: true
   - type: textarea
@@ -44,31 +44,30 @@ body:
     attributes:
       label: Environment summary
       description: Install Method (e.g. pip, interactive script, apt-get, Docker, MSI, edge build) / CLI version (`az --version`) / OS version / Shell Type (e.g. bash, cmd.exe, Bash on Windows)
-      placeholder:
+      placeholder: "Platform: Windows-10-10.0.19044-SP0
+                    Python Version: Python 3.10.4
+                    Installer: MSI
+                    CLI version: 2.37.0
+
+                    Extensions:
+                    containerapp 0.3.5
+                    deploy-to-azure 0.2.0
+                    log-analytics 0.2.2
+
+                    Dependencies:
+                    msal 1.18.0b1
+                    azure-mgmt-resource 21.1.0b1"
       value:
       render: shell
     validations:
       required: true
-#  - type: textarea
-#      id: additional-context
-#      attributes:
-#        label: Additional context
-#        description: Add any other context about the problem here.
-#        placeholder: "Windows-10-10.0.19044-SP0
-#                     Python 3.10.4
-#                     Installer: MSI
-#
-#                     azure-cli 2.37.0
-#
-#                     Extensions:
-#                     containerapp 0.3.5
-#                     deploy-to-azure 0.2.0
-#                     log-analytics 0.2.2
-#
-#                     Dependencies:
-#                     msal 1.18.0b1
-#                     azure-mgmt-resource 21.1.0b1"
-#        value:
-#        render: shell
-#      validations:
-#        required: true
+  - type: textarea
+      id: additional-context
+      attributes:
+        label: Additional context
+        description: Add any other context about the problem here.
+        placeholder:
+        value:
+        render: shell
+      validations:
+        required: true
