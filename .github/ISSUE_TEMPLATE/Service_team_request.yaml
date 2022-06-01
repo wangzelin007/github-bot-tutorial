@@ -1,12 +1,11 @@
-name: Azure CLI Feature Request
-description: Use this template to create a feature request
+name: [Microsoft internal/service team] Feature Request
+description: Use this template to create a feature request for microsoft internal or service team
 body:
   - type: markdown
     id: example
     attributes:
       value: |
-        [How to create a feature request](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
-        [A very good example](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
+        [How to create a internal feature request](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
   - type: input
     id: command
     attributes:
@@ -14,7 +13,7 @@ body:
       description: Please provide the related command with az {command} if you can, so that we can quickly route to the related team for help.
       placeholder: e.g., `az vm create`
     validations:
-      required: true
+      required: false
   - type: input
     id: provider
     attributes:
@@ -22,7 +21,7 @@ body:
       description: What is the Azure resource provider your feature is part of?
       placeholder: e.g., Microsoft.Compute/DiskRP
     validations:
-      required: false
+      required: true
   - type: textarea
     id: feature-desc
     attributes:
@@ -33,16 +32,6 @@ body:
       render: shell
     validations:
       required: true
-  - type: textarea
-    id: solution
-    attributes:
-      label: Describe the solution you'd like
-      description: A clear and concise description of what you want to happen.
-      placeholder:
-      value:
-      render: shell
-    validations:
-      required: false
   - type: input
     id: mini-api
     attributes:
@@ -50,7 +39,7 @@ body:
       description: What is the minimum API version of your service required to implement your feature?
       placeholder: e.g., 2021_04_01
     validations:
-      required: false
+      required: true
   - type: input
     id: swagger
     attributes:
@@ -58,7 +47,7 @@ body:
       description: Provide a link to the location of your feature(s) in the REST API specs repo. If your feature(s) has corresponding commit or pull request in the REST API specs repo, provide them. This should be on the master branch of the REST API specs repo.
       placeholder: e.g., https://github.com/Azure/azure-rest-api-specs/pull/16629
     validations:
-      required: false
+      required: true
   - type: input
     id: date
     attributes:
