@@ -1,16 +1,11 @@
 name: Azure CLI Bug Report Template
 description: Use this template to report a bug
 body:
-  - type: markdown
-    attributes:
-      value: |
-        [How to report a bug](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
-        [A very good example](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
   - type: input
     id: command
     attributes:
       label: Related command
-      description:
+      description: Please provide the related command with az {command} if you can, so that we can quickly route to the related team for help.
       placeholder: e.g., `az vm create`
     validations:
       required: true
