@@ -6,6 +6,7 @@ body:
     attributes:
       value: |
         [How to Request a Feature in CLI](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
+        [configuring issue templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository)
   - type: input
     id: command
     attributes:
