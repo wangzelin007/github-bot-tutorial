@@ -67,3 +67,13 @@ body:
       placeholder: e.g., November, 2021
     validations:
       required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Add any other context about the feature.
+      placeholder:
+      value:
+      render: shell
+    validations:
+      required: false
