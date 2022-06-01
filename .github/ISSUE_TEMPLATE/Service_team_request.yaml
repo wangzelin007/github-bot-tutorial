@@ -5,7 +5,7 @@ body:
     id: example
     attributes:
       value: |
-        [How to create a internal feature request](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
+        [How to Request a Feature in CLI](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
   - type: input
     id: command
     attributes:
