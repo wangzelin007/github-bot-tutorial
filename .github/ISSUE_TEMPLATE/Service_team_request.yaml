@@ -7,12 +7,13 @@ body:
       value: |
         [How to Request a Feature in CLI](https://github.com/Azure/azure-cli/blob/dev/doc/how_to_request_a_feature_in_cli.md)
         [configuring issue templates](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository)
-  - type: input
+  - type: textarea
     id: command
     attributes:
       label: Related command
       description: Please provide the related command with az {command} if you can, so that we can quickly route to the related team for help.
       placeholder: e.g., `az vm create`
+      render: markdown
     validations:
       required: false
   - type: input
@@ -41,12 +42,13 @@ body:
       placeholder: e.g., 2021_04_01
     validations:
       required: true
-  - type: input
+  - type: textarea
     id: swagger
     attributes:
       label: Swagger Link
       description: Provide a link to the location of your feature(s) in the REST API specs repo. If your feature(s) has corresponding commit or pull request in the REST API specs repo, provide them. This should be on the master branch of the REST API specs repo.
       placeholder: e.g., https://github.com/Azure/azure-rest-api-specs/pull/16629
+      render: markdown
     validations:
       required: true
   - type: input
