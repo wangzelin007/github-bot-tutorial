@@ -30,7 +30,7 @@ body:
       description: Provide a brief description of the feature or problem. A link to conceptual documentation may be helpful too.
       placeholder:
       value:
-      render: shell
+      render: markdown
     validations:
       required: true
   - type: input
@@ -64,6 +64,6 @@ body:
       description: Add any other context about the feature.
       placeholder:
       value:
-      render: shell
+      render: markdown
     validations:
       required: false
