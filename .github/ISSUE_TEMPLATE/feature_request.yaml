@@ -70,8 +70,7 @@ body:
     id: provider
     attributes:
       label: Target Date
-      description: If you have a target date for release of this feature/work, please provide it. While we can't guarantee these dates,
-it will help us prioritize your request against other requests.
+      description: If you have a target date for release of this feature/work, please provide it. While we can't guarantee these dates, it will help us prioritize your request against other requests.
       placeholder: e.g., November, 2021
     validations:
       required: true
