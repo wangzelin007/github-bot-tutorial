@@ -9,6 +9,7 @@ routes = web.RouteTableDef()
 
 router = routing.Router()
 
+
 @router.register("issues", action="opened")
 async def issue_opened_event(event, gh, *args, **kwargs):
     """
@@ -20,9 +21,6 @@ async def issue_opened_event(event, gh, *args, **kwargs):
     message = f"Thanks for the report @{author}! I will look into it ASAP! (I'm a bot)."
     await gh.post(url, data={"body": message})
 
-# @routes.get("/")
-# async def main(request):
-#     return web.Response(status=200, text="Hello world!")
 
 @routes.post("/")
 async def main(request):
