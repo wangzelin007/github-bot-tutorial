@@ -43,7 +43,7 @@ body:
   - type: textarea
     id: swagger
     attributes:
-      label: Swagger Link
+      label: Swagger PR link
       description: Provide a link to the location of your feature(s) in the REST API specs repo. If your feature(s) has corresponding commit or pull request in the REST API specs repo, provide them. This should be on the master branch of the REST API specs repo.
       placeholder: e.g., https://github.com/Azure/azure-rest-api-specs/pull/16629
     validations:
