@@ -23,7 +23,8 @@ def route_base_action(action, event):
         'opened': issue_opened,
         'labeled': issue_labeled,
     }
-    logger.info(action)
+    logger.info('====== event: %s ======' % event)
+    logger.info('====== action: %s ======' % action)
     try:
         action_map[action](event)
     except Exception as e:

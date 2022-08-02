@@ -19,7 +19,7 @@ def issue_opened(event):
         labels = [i['name'] for i in event["labels"]]
         # TODO 多个 label 如何自动回复
         message = f"Thanks for the report @{author}! Transfer to {labels} team!"
-    logger.info(message)
+    logger.info('====== message: %s ======' % message)
     body = {
         'body': message,
     }
@@ -35,7 +35,7 @@ def issue_labeled(event):
     author = event["issue"]["user"]["login"]
     labels = [i['name'] for i in event["labels"]]
     message = f"Thanks for the report @{author}! Transfer to {labels} team!"
-    logger.info(message)
+    logger.info('====== message: %s ======' % message)
     body = {
         'body': message,
     }
