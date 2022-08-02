@@ -13,10 +13,10 @@ logger.addHandler(ch)
 def issue_opened(event):
     url = event["issue"]["comments_url"]
     author = event["issue"]["user"]["login"]
-    if not event['labels']:
+    if not event["issue"]["labels"]:
         message = f"Thanks for the report @{author}! I will look into it ASAP! (I'm a bot)."
     else:
-        labels = [i['name'] for i in event["labels"]]
+        labels = [i['name'] for i in event["issue"]["labels"]]
         # TODO 多个 label 如何自动回复
         message = f"Thanks for the report @{author}! Transfer to {labels} team!"
     logger.info('====== message: %s ======' % message)
@@ -33,7 +33,7 @@ def issue_opened(event):
 def issue_labeled(event):
     url = event["issue"]["comments_url"]
     author = event["issue"]["user"]["login"]
-    labels = [i['name'] for i in event["labels"]]
+    labels = [i['name'] for i in event["issue"]["labels"]]
     message = f"Thanks for the report @{author}! Transfer to {labels} team!"
     logger.info('====== message: %s ======' % message)
     body = {
