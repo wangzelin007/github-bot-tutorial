@@ -35,7 +35,7 @@ def issue_opened_event(event):
 @app.route('/webhook', methods=['POST'])
 def webhook():
     print(request)
-    event = request.json()
+    event = request.json
     issue_opened_event(event)
     return
 
