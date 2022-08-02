@@ -20,8 +20,8 @@ def route_base_action(action, event):
     }
     try:
         action_map[action](event)
-    except:
-        pass
+    except Exception as e:
+        raise e
     # url = event["issue"]["comments_url"]
     # author = event["issue"]["user"]["login"]
     #
