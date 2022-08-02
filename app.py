@@ -23,7 +23,6 @@ def route_base_action(action, event):
         'opened': issue_opened,
         'labeled': issue_labeled,
     }
-    logger.info('====== event: %s ======' % event)
     logger.info('====== action: %s ======' % action)
     try:
         action_map[action](event)
@@ -46,8 +45,8 @@ def route_base_action(action, event):
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    print(request)
     event = request.json
+    logger.info('====== event: %s ======' % event)
     action = event["action"]
     route_base_action(action, event)
     return 'Hello github, I am azure cli bot'
