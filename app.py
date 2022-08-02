@@ -18,7 +18,10 @@ def route_base_action(action, event):
         'opened': issue_opened,
         'labeled': issue_labeled,
     }
-    action_map[action](event)
+    try:
+        action_map[action](event)
+    except:
+        pass
     # url = event["issue"]["comments_url"]
     # author = event["issue"]["user"]["login"]
     #
