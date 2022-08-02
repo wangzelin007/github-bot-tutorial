@@ -18,7 +18,7 @@ def issue_opened(event):
     try:
         r = requests.post(url, json=body, headers=constant.headers)
     except requests.RequestException as e:
-        print(e)
+        raise e
 
 
 def issue_labeled(event):
