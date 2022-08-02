@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request
 import requests
 
 
@@ -37,13 +37,7 @@ def webhook():
     print(request)
     event = request.json
     issue_opened_event(event)
-    return redirect(url_for('hello'))
-
-
-@app.route('/hello')
-def hello():
-    response = '<h1>Hello!</h1>'
-    return response
+    return 'Hello github, I am azure cli bot.'
 
 
 if __name__ == '__main__':
