@@ -3,12 +3,12 @@ from flask import Flask
 import requests
 app = Flask(__name__)
 
-secret = os.environ.get("GH_SECRET")
-oauth_token = os.environ.get("GH_AUTH")
+GH_SECRET = os.environ.get("GH_SECRET")
+GH_AUTH = os.environ.get("GH_AUTH")
 
 headers = {
     'Accept': 'application/vnd.github+json',
-    'Authorization': 'token %s' % oauth_token}
+    'Authorization': 'token %s' % GH_AUTH}
 
 
 def issue_opened_event(event):
