@@ -1,10 +1,12 @@
 import os
-from flask import Flask
+from flask import Flask, request
 import requests
-app = Flask(__name__)
+
 
 GH_SECRET = os.environ.get("GH_SECRET")
 GH_AUTH = os.environ.get("GH_AUTH")
+app = Flask(__name__)
+app.secret_key = os.getenv('GH_SECRET', 'secret string')
 
 headers = {
     'Accept': 'application/vnd.github+json',
@@ -31,7 +33,8 @@ def issue_opened_event(event):
 
 
 @app.route('/webhook', methods=['POST'])
-def webhook(request):
+def webhook():
+    print(request)
     event = request.read()
     issue_opened_event(event)
     return
