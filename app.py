@@ -17,8 +17,8 @@ def issue_opened_event(event):
     """
     Whenever an issue is opened, greet the author and say thanks.
     """
-    url = event.data["issue"]["comments_url"]
-    author = event.data["issue"]["user"]["login"]
+    url = event["issue"]["comments_url"]
+    author = event["issue"]["user"]["login"]
 
     message = f"Thanks for the report @{author}! I will look into it ASAP! (I'm a bot)."
     body = {
@@ -35,7 +35,7 @@ def issue_opened_event(event):
 @app.route('/webhook', methods=['POST'])
 def webhook():
     print(request)
-    event = request.read()
+    event = request.json()
     issue_opened_event(event)
     return
 
