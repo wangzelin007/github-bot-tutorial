@@ -1,7 +1,6 @@
-## [project-title] Changelog
+## [azure-cli-bot] Changelog
 
-<a name="x.y.z"></a>
-# x.y.z (yyyy-mm-dd)
+### x.y.z (yyyy-mm-dd)
 
 *Features*
 * ...

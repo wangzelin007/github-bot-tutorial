@@ -1,28 +1,40 @@
-from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+import os
+from flask import Flask
+import requests
 app = Flask(__name__)
 
+secret = os.environ.get("GH_SECRET")
+oauth_token = os.environ.get("GH_AUTH")
 
-@app.route('/')
-def index():
-   print('Request for index page received')
-   return render_template('index.html')
+headers = {
+    'Accept': 'application/vnd.github+json',
+    'Authorization': 'token %s' % oauth_token}
 
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-@app.route('/hello', methods=['POST'])
-def hello():
-   name = request.form.get('name')
+def issue_opened_event(event):
+    """
+    Whenever an issue is opened, greet the author and say thanks.
+    """
+    url = event.data["issue"]["comments_url"]
+    author = event.data["issue"]["user"]["login"]
 
-   if name:
-       print('Request for hello page received with name=%s' % name)
-       return render_template('hello.html', name = name)
-   else:
-       print('Request for hello page received with no name or blank name -- redirecting')
-       return redirect(url_for('index'))
+    message = f"Thanks for the report @{author}! I will look into it ASAP! (I'm a bot)."
+    body = {
+        'body': message,
+    }
+
+    # https://docs.github.com/en/rest/issues/comments
+    try:
+        r = requests.post(url, json=body, headers=headers)
+    except requests.RequestException as e:
+        print(e)
+
+
+@app.route('/webhook', methods=['POST'])
+def webhook(request):
+    event = request.read()
+    issue_opened_event(event)
+    return
 
 
 if __name__ == '__main__':
