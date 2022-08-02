@@ -2,8 +2,13 @@ import os
 from flask import Flask, request
 import requests
 from issues.issues import issue_opened, issue_labeled
+import logging
 
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 app = Flask(__name__)
 app.secret_key = os.getenv('GH_SECRET', 'secret string')
 
@@ -18,6 +23,7 @@ def route_base_action(action, event):
         'opened': issue_opened,
         'labeled': issue_labeled,
     }
+    logger.info(action)
     try:
         action_map[action](event)
     except Exception as e:
