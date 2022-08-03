@@ -1,16 +1,20 @@
-import os
 from flask import Flask, request
-import requests
 from issues.issues import issue_opened, issue_labeled
+from scheduler import scheduler
 import logging
+import os
 
+
+app = Flask(__name__)
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
-app = Flask(__name__)
-app.secret_key = os.getenv('GH_SECRET', 'secret string')
+
+
+class Config(object):
+    SCHEDULER_API_ENABLED = True
 
 
 def route_base_action(action, event):
@@ -53,4 +57,8 @@ def webhook():
 
 
 if __name__ == '__main__':
-   app.run()
+    app.secret_key = os.getenv('GH_SECRET', 'secret string')
+    app.config.from_object(Config())
+    scheduler.init_app(app)
+    scheduler.start()
+    app.run()
