@@ -3,13 +3,22 @@ import asyncio
 import os
 from gidgethub.aiohttp import GitHubAPI
 
+import datetime as dt
 from datetime import datetime
 from datetime import timezone
 from pprint import pprint
 import requests
 import time
 import json
+import logging
 
+now = (datetime.now().strftime("%Y-%m-%d-%H-%M"))
+logger = logging.getLogger(__name__)
+# Task Scheduler Error
+# logging.basicConfig(filename=f'./60days{now}.log', encoding='utf-8', level=logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 token = os.getenv('GH_AUTH')
 ENCODING = 'utf-8'
 headers = {'Authorization': 'token %s' % token}
@@ -40,7 +49,7 @@ async def main():
         # print(issues)
 
 
-def filter_by_time(issues):
+def filter_by_time(issues, type='issue'):
     filter_issues = []
     continue_flag = True
     now = datetime.now().astimezone(timezone.utc)
@@ -54,22 +63,25 @@ def filter_by_time(issues):
                     if label['name'] in ['Service Attention', 'feature-request']:
                         break
                 else:
+                    if (type == 'issue' and 'pull' not in issue['html_url']) or type == 'pull':
+                        item = {
+                            'created_at': issue['created_at'],
+                            'html_url': issue['html_url'],
+                            'title': issue['title'],
+                        }
+                        filter_issues.append(item)
+            else:
+                if (type == 'issue' and 'pull' not in issue['html_url']) or type == 'pull':
                     item = {
                         'created_at': issue['created_at'],
                         'html_url': issue['html_url'],
                         'title': issue['title'],
                     }
                     filter_issues.append(item)
-            else:
-                item = {
-                    'created_at': issue['created_at'],
-                    'html_url': issue['html_url'],
-                    'title': issue['title'],
-                }
-                filter_issues.append(item)
         if period > 90:
             continue_flag = False
             break
+    logger.debug('filter_by_time: {}'.format(filter_issues))
     return filter_issues, continue_flag
 
 
@@ -91,6 +103,7 @@ def filter_by_sla(issues):
         if period > 3:
             continue_flag = False
             break
+    logger.debug('filter_by_sla: {}'.format(filter_issues))
     return filter_issues
 
 
@@ -113,6 +126,7 @@ def filter_by_sla_pr(pulls):
         elif period > 3:
             continue_flag = False
             break
+    logger.debug('filter_by_sla_pr: {}'.format(filter_prs))
     return filter_prs
 
 
@@ -134,22 +148,27 @@ def main():
         "Azure-cli-extension": "https://api.github.com/repos/Azure/azure-cli-extensions/pulls?state=open&per_page=100&page=1",
     }
     # issues
+    days_60 = datetime.now().astimezone(timezone.utc)-dt.timedelta(days=60)
+    days_90 = datetime.now().astimezone(timezone.utc)-dt.timedelta(days=90)
+    logger.debug('{} ~ {}'.format(days_60, days_90))
     for repo, url in urls.items():
         res = requests.get(url, headers=headers)
         issues = res.json()
-        filter_issues, continue_flag = filter_by_time(issues)
+        # logger.debug(issues)
+        filter_issues, continue_flag = filter_by_time(issues, 'issue')
         filter_issues2 = filter_by_sla(issues)
         while 'next' in res.links.keys():
             time.sleep(0.1)
             res = requests.get(res.links['next']['url'], headers=headers)
             tmp = res.json()
-            filter_tmp, continue_flag = filter_by_time(tmp)
+            # logger.debug(tmp)
+            filter_tmp, continue_flag = filter_by_time(tmp, 'issue')
             filter_tmp2 = filter_by_sla(tmp)
-            if continue_flag:
+            if filter_tmp:
                 filter_issues.extend(filter_tmp)
-                if filter_tmp2:
-                    filter_issues2.extend(filter_tmp2)
-            else:
+            if filter_tmp2:
+                filter_issues2.extend(filter_tmp2)
+            if not continue_flag:
                 break
         # Azure-cli repo: total 94
         with open(r'C:\Users\zelinwang\OneDrive - Microsoft\Desktop\issues-prs-60-90days.txt', 'a', encoding=ENCODING) as f:
@@ -169,19 +188,21 @@ def main():
     for repo, url in prs.items():
         res = requests.get(url, headers=headers)
         pulls = res.json()
-        filter_pulls, continue_flag = filter_by_time(pulls)
+        # logger.debug(pulls)
+        filter_pulls, continue_flag = filter_by_time(pulls, 'pull')
         filter_pulls2 = filter_by_sla_pr(pulls)
         while 'next' in res.links.keys():
             time.sleep(0.1)
             res = requests.get(res.links['next']['url'], headers=headers)
             tmp = res.json()
-            filter_tmp, continue_flag = filter_by_time(tmp)
+            # logger.debug(tmp)
+            filter_tmp, continue_flag = filter_by_time(tmp, 'pull')
             filter_tmp2 = filter_by_sla_pr(tmp)
-            if continue_flag:
+            if filter_tmp:
                 filter_pulls.extend(filter_tmp)
-                if filter_tmp2:
-                    filter_pulls2.extend(filter_tmp2)
-            else:
+            if filter_tmp2:
+                filter_pulls2.extend(filter_tmp2)
+            if not continue_flag:
                 break
         with open(r'C:\Users\zelinwang\OneDrive - Microsoft\Desktop\issues-prs-60-90days.txt', 'a', encoding=ENCODING) as f:
             f.write('\n\n')
