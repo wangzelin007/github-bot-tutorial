@@ -13,8 +13,8 @@ logger.addHandler(ch)
 def pr_opened(event):
     # common comment use issue rest api
     # https://docs.github.com/en/rest/issues/comments
-    url = event["issue_url"]["number"]
-    author = event["pull_request"]["user"]["login"]
+    url = event['pull_request']['issue_url']['number']
+    author = event['pull_request']['user']['login']
     message = f"Thanks for the contribution @{author}!"
     logger.info("====== message: %s ======" % message)
     body = {
