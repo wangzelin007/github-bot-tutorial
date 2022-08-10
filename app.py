@@ -42,19 +42,6 @@ def route_base_action(action, event, type):
         action_map[type][action](event)
     except Exception as e:
         raise e
-    # url = event["issue"]["comments_url"]
-    # author = event["issue"]["user"]["login"]
-    #
-    # message = f"Thanks for the report @{author}! I will look into it ASAP! (I'm a bot)."
-    # body = {
-    #     'body': message,
-    # }
-    #
-    # # https://docs.github.com/en/rest/issues/comments
-    # try:
-    #     r = requests.post(url, json=body, headers=headers)
-    # except requests.RequestException as e:
-    #     print(e)
 
 
 @app.route('/webhook', methods=['POST'])
@@ -62,9 +49,9 @@ def webhook():
     event = request.json
     logger.info("====== event: %s ======" % event)
     action = event['action']
-    if 'issue' in action.keys():
+    if 'issue' in event.keys():
         type = 'issue'
-    elif 'pull_request' in action.keys():
+    elif 'pull_request' in event.keys():
         type = 'pull_request'
     route_base_action(action, event, type)
     return 'Hello github, I am azure cli bot'
