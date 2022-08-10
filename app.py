@@ -1,5 +1,6 @@
 from flask import Flask, request
-from issues.issues import issue_opened, issue_labeled
+from issues.issues import issue_opened
+from pull_request.pull_request import pr_opened
 from scheduler import scheduler
 import logging
 import os
@@ -17,19 +18,28 @@ class Config(object):
     SCHEDULER_API_ENABLED = True
 
 
-def route_base_action(action, event):
+def route_base_action(action, event, type):
     """
     route an issue base on action.
     """
+    # issues:
     # opened, edited, deleted, pinned, unpinned, closed, reopened, assigned, unassigned,
     # labeled, unlabeled, locked, unlocked, transferred, milestoned, or demilestoned
+    # pull requests:
+    # assigned, auto_merge_disabled, auto_merge_enabled, closed, converted_to_draft
+    # edited, labeled, locked, opened, ready_for_review, reopened, review_request_removed
+    # review_requested, synchronize, unassigned, unlabeled, unlocked
     action_map = {
-        'opened': issue_opened,
-        'labeled': issue_labeled,
+        'issue': {
+            'opened': issue_opened,
+        },
+        'pull_request': {
+            "opened": pr_opened,
+        }
     }
-    logger.info('====== action: %s ======' % action)
+    logger.info("====== action: %s ======" % action)
     try:
-        action_map[action](event)
+        action_map[type][action](event)
     except Exception as e:
         raise e
     # url = event["issue"]["comments_url"]
@@ -50,9 +60,13 @@ def route_base_action(action, event):
 @app.route('/webhook', methods=['POST'])
 def webhook():
     event = request.json
-    logger.info('====== event: %s ======' % event)
-    action = event["action"]
-    route_base_action(action, event)
+    logger.info("====== event: %s ======" % event)
+    action = event['action']
+    if 'issue' in action.keys():
+        type = 'issue'
+    elif 'pull_request' in action.keys():
+        type = 'pull_request'
+    route_base_action(action, event, type)
     return 'Hello github, I am azure cli bot'
 
 
