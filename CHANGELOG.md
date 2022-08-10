@@ -1,12 +1,6 @@
 ## [azure-cli-bot] Changelog
 
-### x.y.z (yyyy-mm-dd)
+### 0.0.1 (2022-08-10)
 
 *Features*
-* ...
-
-*Bug Fixes*
-* ...
-
-*Breaking Changes*
-* ...
+auto reply to avoid issue/pr response SLA.
