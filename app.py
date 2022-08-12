@@ -1,6 +1,6 @@
 from flask import Flask, request
-from issues.issues import issue_opened
-from pull_request.pull_request import pr_opened
+from issues.issues import open_issue
+from pull_request.pull_request import open_pull_request
 from scheduler import scheduler
 import logging
 import os
@@ -31,10 +31,10 @@ def route_base_action(action, event, type):
     # review_requested, synchronize, unassigned, unlabeled, unlocked
     action_map = {
         'issue': {
-            'opened': issue_opened,
+            'opened': open_issue,
         },
         'pull_request': {
-            "opened": pr_opened,
+            "opened": open_pull_request,
         }
     }
     logger.info("====== action: %s ======" % action)

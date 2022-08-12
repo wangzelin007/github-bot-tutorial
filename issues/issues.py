@@ -11,27 +11,27 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 
-def issue_opened(event):
+def open_issue(event):
     # https://api.github.com/repos/{owner}/{repo}/issues/{number}/comments
     issue_url = event['issue']['url']
     comment_url = event['issue']['comments_url']
     author = event['issue']['user']['login']
     message = f"Thanks for the report @{author}! We will look into it ASAP!"
     logger.info('====== message: %s ======' % message)
-    issue_comment(comment_url, message)
+    comment_issue(comment_url, message)
     # get created_at
     created_at =  event['issue']['created_at']
     logger.info('====== created_at: %s ======' % created_at)
     # select milestone
     msg, ms = milestone.select_milestone(created_at, author, ms_type='issue')
     if msg:
-        issue_comment(comment_url, msg)
+        comment_issue(comment_url, msg)
     # assign milestone
     # https://api.github.com/repos/{owner}/{repo}/issues/26
     update_issue(issue_url, milestone=ms)
 
 
-def issue_comment(url, message):
+def comment_issue(url, message):
     body = {
         'body': message,
     }
