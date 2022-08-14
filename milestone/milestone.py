@@ -16,7 +16,7 @@ def select_milestone(created_at, author, ms_type):
     # More than three week: put into the current milestone
     all_milestones, index = get_all_milestones()
     current_milestone = get_current_milestone(all_milestones, index)
-    next_milestone = get_current_milestone(all_milestones, index)
+    next_milestone = get_next_milestone(all_milestones, index)
     created_at = datetime.datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
     if ms_type == 'issue':
         if get_remain_days_of_current_milestone(current_milestone, created_at) > 21:
