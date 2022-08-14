@@ -1,6 +1,4 @@
-import constant
 import logging
-import requests
 
 import issues.issues
 from milestone import milestone

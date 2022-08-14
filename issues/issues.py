@@ -50,7 +50,7 @@ def update_issue(url, **kwargs):
     if milestone:
         body['milestone'] = milestone
     try:
-        r = requests.post(url, json=body, headers=constant.headers)
+        r = requests.patch(url, json=body, headers=constant.headers)
     except requests.RequestException as e:
         logger.debug('response: %s', r)
         logger.debug('text: %s', r.text)
