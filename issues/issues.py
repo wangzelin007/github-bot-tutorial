@@ -23,7 +23,7 @@ def open_issue(event):
     created_at =  event['issue']['created_at']
     logger.info('====== created_at: %s ======' % created_at)
     # select milestone
-    msg, ms = milestone.select_milestone(created_at, author, ms_type='issue')
+    ms, msg = milestone.select_milestone(created_at, author, ms_type='issue')
     if msg:
         comment_issue(comment_url, msg)
     # assign milestone

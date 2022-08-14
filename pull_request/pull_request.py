@@ -25,7 +25,7 @@ def open_pull_request(event):
     created_at = event['pull_request']['created_at']
     logger.info('====== created_at: %s ======' % created_at)
     # select milestone
-    msg, ms = milestone.select_milestone(created_at, author, ms_type='pull_request')
+    ms, msg = milestone.select_milestone(created_at, author, ms_type='pull_request')
     if msg:
         issues.comment_issue(comment_url, msg)
     # assign milestone
