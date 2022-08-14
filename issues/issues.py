@@ -47,6 +47,7 @@ def comment_issue(url, message):
 def update_issue(url, **kwargs):
     body = {}
     milestone = kwargs.pop("milestone", {})
+    logger.debug('assign milestone: %s', milestone)
     if milestone:
         # get milestone id
         body['milestone'] = milestone[0]
