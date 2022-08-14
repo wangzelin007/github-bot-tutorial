@@ -48,7 +48,8 @@ def update_issue(url, **kwargs):
     body = {}
     milestone = kwargs.pop("milestone", {})
     if milestone:
-        body['milestone'] = milestone
+        # get milestone id
+        body['milestone'] = milestone[0]
     try:
         r = requests.patch(url, json=body, headers=constant.headers)
     except requests.RequestException as e:

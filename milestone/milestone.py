@@ -61,10 +61,12 @@ def get_all_milestones():
         else:
             index += 1
     logger.info('====== all_milestones %s, index: %s ======', all_milestones, index)
+    # [[4, None], [1, datetime.datetime(2022, 9, 6, 7, 0)]]
     return all_milestones, index
 
 
 def get_current_milestone(all_milestones, index):
+    # [1, datetime.datetime(2022, 9, 6, 7, 0)]
     return all_milestones[index]
 
 
