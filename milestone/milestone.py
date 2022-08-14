@@ -39,7 +39,7 @@ def select_milestone(created_at, author, ms_type):
 
 
 def get_all_milestones():
-    # TODO 乱序
+    # NOTE: github API has automatically sorted by due on field
     # GET https://api.github.com/repos/{owner}/{repo}/milestones
     url = 'https://api.github.com/repos/wangzelin007/github-bot-tutorial/milestones'
     try:
