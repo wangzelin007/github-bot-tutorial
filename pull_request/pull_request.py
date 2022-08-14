@@ -1,6 +1,8 @@
-import constant
 import logging
-import requests
+
+import issues.issues
+from milestone import milestone
+from issues import issues
 
 
 logger = logging.getLogger(__name__)
@@ -10,17 +12,22 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 
-def pr_opened(event):
+def open_pull_request(event):
     # common comment use issue rest api
-    # https://docs.github.com/en/rest/issues/comments
-    url = event['pull_request']['issue_url']
+    # https://api.github.com/repos/{owner}/{repo}/issues/{number}/
+    issue_url = event['pull_request']['issue_url']
+    comment_url = issue_url + '/comments'
     author = event['pull_request']['user']['login']
     message = f"Thanks for the contribution @{author}!"
     logger.info("====== message: %s ======" % message)
-    body = {
-        'body': message,
-    }
-    try:
-        r = requests.post(url, json=body, headers=constant.headers)
-    except requests.RequestException as e:
-        raise e
+    issues.comment_issue(comment_url, message)
+    # get created_at
+    created_at = event['pull_request']['created_at']
+    logger.info('====== created_at: %s ======' % created_at)
+    # select milestone
+    msg, ms = milestone.select_milestone(created_at, author, ms_type='pull_request')
+    if msg:
+        issues.comment_issue(comment_url, msg)
+    # assign milestone
+    # https://api.github.com/repos/{owner}/{repo}/issues/26
+    issues.update_issue(issue_url, milestone=ms)
