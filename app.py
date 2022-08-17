@@ -46,17 +46,25 @@ def route_base_action(action, event, type):
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    user_agent = request.headers.get('User-Agent')
-    logger.info("====== user agent: %s ======" % user_agent)
-    event = request.json
-    logger.info("====== event: %s ======" % event)
-    action = event['action']
-    if 'issue' in event.keys():
-        type = 'issue'
-    elif 'pull_request' in event.keys():
-        type = 'pull_request'
-    route_base_action(action, event, type)
-    return 'Hello github, I am azure cli bot'
+    event_type = request.headers.get('X-GitHub-Event')
+    logger.info("====== event type: %s ======" % event_type)
+    if event_type in ['pull_request', 'issues']:
+        event = request.json
+        logger.info("====== event: %s ======" % event)
+        action = event['action']
+        if action in ['opened']:
+            if 'issue' in event.keys():
+                type = 'issue'
+            elif 'pull_request' in event.keys():
+                type = 'pull_request'
+            route_base_action(action, event, type)
+            return 'Hello github, I am azure cli bot'
+        else:
+            logger.info("====== unsupported action: %s %s======", event_type, action)
+            return 'Not support action'
+    else:
+        logger.info("====== unsupported event type: %s ======", event_type)
+        return 'Not support type'
 
 
 if __name__ == '__main__':
