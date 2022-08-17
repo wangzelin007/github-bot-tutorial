@@ -56,7 +56,7 @@ logger.addHandler(ch)
 def job2():
     previous_milestone = milestone.get_previous_milestone()
     current_milestone = milestone.get_current_milestone()
-    issues_url = '/'.join(constant.BASE_URL, 'issues')
+    issues_url = '/'.join([constant.BASE_URL, 'issues'])
     if previous_milestone:
         # get PRs and issues in the previous milestone
         unresolved_items = issues.list_issues(issues_url, milestone=previous_milestone, state='opened')
@@ -65,7 +65,7 @@ def job2():
             issue_url =  item['url']
             issues.update_issue(issue_url, milestone=current_milestone)
             # comment
-            comment_url = '/'.join(issue_url, 'comments')
+            comment_url = '/'.join([issue_url, 'comments'])
             msg = 'Since this issue/pr was not resolved in the previous milestone, move it to the next milestone.'
             issues.comment_issue(comment_url, msg)
     logger.info('Execute crontab move_to_next_milestone success!')

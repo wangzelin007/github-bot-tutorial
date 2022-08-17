@@ -77,7 +77,7 @@ def list_pull_request_files(url):
 
 def search_files_in_pull_request(url, search_files):
     # https://api.github.com/repos/{OWNER}/{REPO}/pulls/{NUMBER}
-    url = '/'.join(url, 'files')
+    url = '/'.join([url, 'files'])
     pull_request_files = list_pull_request_files(url)
     for file in search_files:
         if any([file in pull_request_file for pull_request_file in pull_request_files]):
