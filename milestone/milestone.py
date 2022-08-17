@@ -1,7 +1,8 @@
-import constant
+# import constant
 import datetime
 import logging
-import requests
+# import requests
+from common.request_client import RequestHandler
 
 
 logger = logging.getLogger(__name__)
@@ -9,14 +10,14 @@ logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
+requestClient = RequestHandler()
 
 
 def select_milestone(created_at, author, ms_type):
     # Less than three weeks: put into the next milestone with a warning message
     # More than three week: put into the current milestone
-    all_milestones, index = get_all_milestones()
-    current_milestone = get_current_milestone(all_milestones, index)
-    next_milestone = get_next_milestone(all_milestones, index)
+    current_milestone = get_current_milestone()
+    next_milestone = get_next_milestone()
     created_at = datetime.datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
     if ms_type == 'issue':
         if get_remain_days_of_current_milestone(current_milestone, created_at) > 21:
@@ -40,15 +41,16 @@ def select_milestone(created_at, author, ms_type):
 
 def get_all_milestones():
     # NOTE: github API has automatically sorted by due on field
-    # GET https://api.github.com/repos/{owner}/{repo}/milestones
+    # GET https://api.github.com/repos/{OWNER}/{REPO}/milestones
     url = 'https://api.github.com/repos/wangzelin007/github-bot-tutorial/milestones'
-    try:
-        r = requests.get(url, headers=constant.headers)
-        logger.debug('response: %s', r)
-        logger.debug('text: %s', r.text)
-        logger.debug('code: %s', r.status_code)
-    except requests.RequestException as e:
-        raise e
+    # try:
+    #     r = requests.get(url, headers=constant.HEADERS)
+    #     logger.debug('response: %s', r)
+    #     logger.debug('text: %s', r.text)
+    #     logger.debug('code: %s', r.status_code)
+    # except requests.RequestException as e:
+    #     raise e
+    r = requestClient.visit('GET', url)
     all_milestones = []
     for i in r.json():
         number = i['number']
@@ -64,18 +66,23 @@ def get_all_milestones():
     # [[4, None], [1, datetime.datetime(2022, 9, 6, 7, 0)]]
     return all_milestones, index
 
+def get_previous_milestone():
+    all_milestones, index = get_all_milestones()
+    # [1, datetime.datetime(2022, 9, 6, 7, 0)]
+    return all_milestones[index-1] if index > 0 else None
 
-def get_current_milestone(all_milestones, index):
+def get_current_milestone():
+    all_milestones, index = get_all_milestones()
     # [1, datetime.datetime(2022, 9, 6, 7, 0)]
     return all_milestones[index]
 
 
-def get_next_milestone(all_milestones, index):
-    return all_milestones[index+1]
+def get_next_milestone():
+    all_milestones, index = get_all_milestones()
+    return all_milestones[index+1] if index < (len(all_milestones) - 1) else None
 
 
 def get_remain_days_of_current_milestone(current_milestone, created_at):
-    # transform
     return (current_milestone[1] - created_at).days
 
 
