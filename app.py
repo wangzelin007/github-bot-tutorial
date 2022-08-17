@@ -46,6 +46,8 @@ def route_base_action(action, event, type):
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
+    user_agent = request.headers.get('User-Agent')
+    logger.info("====== user agent: %s ======" % user_agent)
     event = request.json
     logger.info("====== event: %s ======" % event)
     action = event['action']
