@@ -37,12 +37,12 @@ def open_pull_request(event):
     issues.update_issue(issue_url, milestone=ms)
     # TODO: Whether to enable (azure-cli: disable, azure-cli-extensions: enable)
     search_files = ['setup.py', 'HISTORY.rst']
-    if not search_files_in_pull_request(search_files):
+    if not search_files_in_pull_request(pull_request_url, search_files):
         msg = f"Hi @{author},\nIf you want to release the new extension version," \
               f" please write the description of changes into HISTORY.rst and update setup.py."
         issues.comment_issue(comment_url, msg)
     # search_files = ['commands.py', '_params.py']
-    # if search_files_in_pull_request(search_files):
+    # if search_files_in_pull_request(url, search_files):
     #     commands, params, msg, delete_confirmation = regex.detect_new_command()
     #     if commands or params:
     #         issues.comment_issue(comment_url, msg)
@@ -62,7 +62,7 @@ def update_pull_request(event):
 
 
 def list_pull_request_files(url):
-    # https://api.github.com/repos/wangzelin007/github-bot-tutorial/pulls/29/files
+    # https://api.github.com/repos/{OWNER}/{REPO}/pulls/{NUMBER}/files
     # try:
     #     r = requests.GET(url, headers=constant.HEADERS)
     # except requests.RequestException as e:
@@ -75,7 +75,8 @@ def list_pull_request_files(url):
     return files
 
 
-def search_files_in_pull_request(search_files, url):
+def search_files_in_pull_request(url, search_files):
+    # https://api.github.com/repos/{OWNER}/{REPO}/pulls/{NUMBER}
     url = '/'.join(url, 'files')
     pull_request_files = list_pull_request_files(url)
     for file in search_files:
