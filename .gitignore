@@ -1,1 +1,5 @@
 60days.py
+.idea
+__pycache__
+env
+
