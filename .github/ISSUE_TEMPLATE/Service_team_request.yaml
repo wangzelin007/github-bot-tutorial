@@ -21,8 +21,8 @@ body:
     attributes:
       label: Resource Provider
       description: |
-      What is the Azure resource provider your feature is part of?
-      If you cannot provide, please fill in N/A.
+        What is the Azure resource provider your feature is part of?
+        If you cannot provide, please fill in N/A.
       placeholder: e.g., Microsoft.Compute/disks
     validations:
       required: true
