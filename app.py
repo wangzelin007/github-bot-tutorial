@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, g
 from issues.issues import open_issue
 from pull_request.pull_request import open_pull_request
 from scheduler import scheduler
@@ -50,6 +50,7 @@ def webhook():
     logger.info("====== event type: %s ======" % event_type)
     if event_type in ['pull_request', 'issues']:
         event = request.json
+        g.base_url = event['repository']['url']
         logger.info("====== event: %s ======" % event)
         action = event['action']
         if action in ['opened']:

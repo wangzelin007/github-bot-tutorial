@@ -3,6 +3,7 @@ import datetime
 import logging
 # import requests
 from common.request_client import RequestHandler
+from flask import g
 
 
 logger = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ def select_milestone(created_at, author, ms_type):
 def get_all_milestones():
     # NOTE: github API has automatically sorted by due on field
     # GET https://api.github.com/repos/{OWNER}/{REPO}/milestones
-    url = 'https://api.github.com/repos/wangzelin007/github-bot-tutorial/milestones'
+    url = '/'.join([g.base_url, 'milestones'])
     # try:
     #     r = requests.get(url, headers=constant.HEADERS)
     #     logger.debug('response: %s', r)
