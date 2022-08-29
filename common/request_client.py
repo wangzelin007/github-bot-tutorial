@@ -19,6 +19,7 @@ class RequestHandler:
             try:
                 r = requests.session().request(method, url, params=params, data=data, json=json, headers=self.headers,
                                                **kwargs)
+                logger.debug('status_code: %s', r.status_code)
             except requests.RequestException as e:
                 logger.debug('response: %s', r)
                 logger.debug('code: %s', r.status_code)

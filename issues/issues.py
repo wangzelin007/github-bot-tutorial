@@ -62,6 +62,7 @@ def update_issue(url, **kwargs):
     #     logger.debug('text: %s', r.text)
     #     logger.debug('code: %s', r.status_code)
     #     raise e
+    logger.debug('update_issue: url-> %s, body-> %s', url, body)
     r = requestClient.visit('PATCH', url, json=body)
 
 
