@@ -236,7 +236,12 @@
     {
       "taskName": "move issue/pr to next milestone",
       "taskType": "scheduled",
-      "frequency": "1day",
+      "frequency": [
+        {
+          "type": "interval",
+          "days": 1
+        }
+      ],
       "conditions": [
         {
           "name": "list_issues",
