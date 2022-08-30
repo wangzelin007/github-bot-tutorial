@@ -1,0 +1,270 @@
+{
+  "tasks": [
+    {
+      "taskName": "open pull request",
+      "taskType": "trigger",
+      "eventType": "pull_request",
+      "eventAction": "opened",
+      "conditions": [
+        {
+          "name": "more_than_x_days",
+          "parameters": {
+            "x_days": 21
+          },
+          "set_variable": {
+            "$(x_days)": "p.x_days"
+          },
+          "actions": [
+            {
+              "name": "set_milestone",
+              "parameters": {
+                "milestone": "current_milestone"
+              }
+            },
+            {
+              "name": "set_milestone",
+              "parameters": {
+                "milestone": "next_milestone"
+              },
+              "reversed": "true"
+            },
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nSince the current milestone time is less than $(x_days) days, this pr will be reviewed in the next milestone!"
+              },
+              "reversed": "true"
+            }
+          ]
+        },
+        {
+          "operator": "and",
+          "operands": [
+            {
+              "operator": "not",
+              "operands": [
+                {
+                  "name": "search_file",
+                  "parameters": {
+                    "search_file": "index.json"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "not",
+              "operands": [
+                {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "name": "search_file",
+                      "parameters": {
+                        "search_file": "setup.py"
+                      }
+                    },
+                    {
+                      "name": "search_file",
+                      "parameters": {
+                        "search_file": "HISTORY.rst"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "actions": [
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nIf you want to release the new extension version, please write the description of changes into HISTORY.rst and update setup.py."
+              }
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "add_reply",
+          "parameters": {
+            "comment": "Thanks for the contribution @{author}!"
+          }
+        }
+      ]
+    },
+    {
+      "taskName": "open issue",
+      "taskType": "trigger",
+      "eventType": "issue",
+      "eventAction": "opened",
+      "conditions": [
+        {
+          "name": "more_than_x_days",
+          "parameters": {
+            "x_days": 7
+          },
+          "set_variable": {
+            "$(x_days)": "p.x_days"
+          },
+          "actions": [
+            {
+              "name": "set_milestone",
+              "parameters": {
+                "milestone": "current_milestone"
+              }
+            },
+            {
+              "name": "set_milestone",
+              "parameters": {
+                "milestone": "next_milestone"
+              },
+              "reversed": "true"
+            },
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nSince the current milestone time is less than $(x_days) days, this issue will be resolved in the next milestone"
+              },
+              "reversed": "true"
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "add_reply",
+          "parameters": {
+            "comment": "Thanks for the report @{author}! We will look into it ASAP!"
+          }
+        }
+      ]
+    },
+    {
+      "taskName": "common issue",
+      "taskType": "trigger",
+      "eventType": "issue",
+      "eventAction": "opened",
+      "conditions": [
+        {
+          "name": "contains",
+          "parameters": {
+            "titlePattern": "OSError: [WinError -2146892987]",
+            "isRegex": false,
+            "scope": "Error Log"
+          },
+          "actions": [
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nWe've seen this issue before in https://github.com/Azure/azure-cli/issues/21010. Could you check https://github.com/Azure/azure-cli/issues/21010#issuecomment-1104844455 and share more info?"
+              },
+              "reversed": "true"
+            }
+          ]
+        },
+        {
+          "name": "contains",
+          "parameters": {
+            "titlePattern": "OSError: [WinError 0]",
+            "isRegex": false,
+            "scope": "Error Log"
+          },
+          "actions": [
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nWe've seen this issue before in https://github.com/Azure/azure-cli/issues/20278. Could you check https://github.com/Azure/azure-cli/issues/20278#issuecomment-965938701 and share more info?"
+              },
+              "reversed": "true"
+            }
+          ]
+        },
+        {
+          "name": "contains",
+          "parameters": {
+            "titlePattern": "OSError: [WinError -2146893813]",
+            "isRegex": false,
+            "scope": "Error Log"
+          },
+          "actions": [
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nWe've seen this issue before in #20231. Could you check #20231 (comment) and share more info?"
+              },
+              "reversed": "true"
+            }
+          ]
+        },
+        {
+          "name": "contains",
+          "parameters": {
+            "titlePattern": "400 Client Error: Bad Request for url: http://localhost:50342/oauth2/token",
+            "isRegex": false,
+            "scope": "Error Log"
+          },
+          "actions": [
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nThis is a known issue of Cloud Shell, please see #11749 (comment) for workaround."
+              },
+              "reversed": "true"
+            }
+          ]
+        },
+        {
+          "name": "contains",
+          "parameters": {
+            "titlePattern": "Failed to load token files.",
+            "isRegex": false,
+            "scope": "Error Log"
+          },
+          "actions": [
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nThis is because Azure CLI doesn't support concurrent execution. Please see #9427 (comment) for a workaround."
+              },
+              "reversed": "true"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "taskName": "move issue/pr to next milestone",
+      "taskType": "scheduled",
+      "frequency": "1day",
+      "conditions": [
+        {
+          "name": "list_issues",
+          "parameters": {
+            "milestone": "previous_milestone",
+            "state": "opened"
+          },
+          "set_variable": {
+            "$(urls)": "[i.url for i in r]"
+          },
+          "actions": [
+            {
+              "name": "set_milestone",
+              "parameters": {
+                "milestone": "current_milestone",
+                "urls": "$(urls)"
+              }
+            },
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nSince this issue/pr was not resolved in the previous milestone, move it to the next milestone.",
+                "urls": "$(urls)"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
