@@ -73,6 +73,7 @@ def webhook2():
     event = request.json
     print(event)
     logger.info("====== event: %s ======", event)
+    return 'Hello azclitools!'
 
 
 if __name__ == '__main__':
