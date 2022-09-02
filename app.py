@@ -68,6 +68,13 @@ def webhook():
         return 'Not support type'
 
 
+@app.route('/webhook2', methods=['POST'])
+def webhook2():
+    event = request.json
+    print(event)
+    logger.info("====== event: %s ======", event)
+
+
 if __name__ == '__main__':
     app.secret_key = os.getenv('GH_SECRET', 'secret string')
     app.config.from_object(Config())
