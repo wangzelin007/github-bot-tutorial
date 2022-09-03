@@ -4,14 +4,14 @@ from pull_request.pull_request import open_pull_request
 from scheduler import scheduler
 import logging
 import os
-import typing as t
-from apiflask import APIFlask, HTTPBasicAuth
-from werkzeug.security import generate_password_hash, check_password_hash
+# import typing as t
+# from apiflask import APIFlask, HTTPBasicAuth
+# from werkzeug.security import generate_password_hash, check_password_hash
 
 
-# app = Flask(__name__)
-app = APIFlask(__name__)
-auth = HTTPBasicAuth()
+app = Flask(__name__)
+# app = APIFlask(__name__)
+# auth = HTTPBasicAuth()
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
@@ -19,9 +19,9 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 
-users = {
-    'azclitools': generate_password_hash(os.getenv('GH_SECRET', 'secret string')),
-}
+# users = {
+#     'azclitools': generate_password_hash(os.getenv('GH_SECRET', 'secret string')),
+# }
 
 
 class Config(object):
@@ -80,23 +80,23 @@ def webhook():
 
 # test secret
 # for Azure DevOps
-@app.route('/webhook2', methods=['POST'])
-@app.auth_required(auth)
-def webhook2():
-    event = request.json
-    print(event)
-    logger.info("====== event: %s ======", event)
-    return 'Hello azclitools!'
+# @app.route('/webhook2', methods=['POST'])
+# @app.auth_required(auth)
+# def webhook2():
+#     event = request.json
+#     print(event)
+#     logger.info("====== event: %s ======", event)
+#     return 'Hello azclitools!'
 
 
-@auth.verify_password
-def verify_password(username: str, password: str) -> t.Union[str, None]:
-    if (
-        username in users
-        and check_password_hash(users[username], password)
-    ):
-        return username
-    return None
+# @auth.verify_password
+# def verify_password(username: str, password: str) -> t.Union[str, None]:
+#     if (
+#         username in users
+#         and check_password_hash(users[username], password)
+#     ):
+#         return username
+#     return None
 
 
 # test secret
@@ -111,23 +111,30 @@ import hmac
 import hashlib
 from flask import request
 
+
 # x-hub-signature-256
 def validate_signature():
     key = bytes(os.getenv('GH_SECRET', 'secret string'), 'utf-8')
     expected_signature = hmac.new(key=key, msg=request.data, digestmod=hashlib.sha256).hexdigest()
-    incoming_signature = request.headers.get('x-hub-signature-256').split('sha256=')[-1].strip()
-    if not hmac.compare_digest(incoming_signature, expected_signature):
-        return False
-    return True
+    x_hub_signature_256 = request.headers.get('x-hub-signature-256')
+    if x_hub_signature_256:
+        incoming_signature = x_hub_signature_256.split('sha256=')[-1].strip()
+        if not hmac.compare_digest(incoming_signature, expected_signature):
+            return False
+        return True
+    return False
 
 
-@app.route('/github')
+# @app.post('/github')
+@app.route('/github', methods=['POST'])
 def webhook3():
     if validate_signature():
-        event = request.json
-        print(event)
-        logger.info("====== event: %s ======", event)
+        # event = request.json
+        # print(event)
+        # logger.info("====== event: %s ======", event)
         return 'Hello azclitools!'
+    else:
+        return 'Error', 500
 
 
 if __name__ == '__main__':
@@ -135,4 +142,4 @@ if __name__ == '__main__':
     app.config.from_object(Config())
     scheduler.init_app(app)
     scheduler.start()
-    app.run()
+    app.run(debug=True)
