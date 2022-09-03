@@ -2,3 +2,4 @@ Flask==2.0.2
 requests
 flask-apscheduler
 apiflask
+jsonify

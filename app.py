@@ -9,6 +9,7 @@ import hashlib
 import typing as t
 from apiflask import APIFlask, HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 
 
 # app = Flask(__name__)
@@ -106,29 +107,33 @@ def verify_password(username: str, password: str) -> t.Union[str, None]:
     return None
 
 
-# GitHub secret: x-hub-signature-256
-def validate_signature():
-    key = bytes(os.getenv('GH_SECRET', 'secret string'), 'utf-8')
-    expected_signature = hmac.new(key=key, msg=request.data, digestmod=hashlib.sha256).hexdigest()
-    x_hub_signature_256 = request.headers.get('x-hub-signature-256')
-    if x_hub_signature_256:
-        incoming_signature = x_hub_signature_256.split('sha256=')[-1].strip()
-        if not hmac.compare_digest(incoming_signature, expected_signature):
-            return False
-        return True
-    return False
+# GitHub secret decorator
+def validate_signature(f):
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        if 'x-hub-signature-256' in request.headers:
+            x_hub_signature_256 = request.headers.get('x-hub-signature-256')
+        if not x_hub_signature_256:
+            return {"message": "x-hub-signature-256 is missing!"}, 401
+        try:
+            key = bytes(os.getenv('GH_SECRET', 'secret string'), 'utf-8')
+            expected_signature = hmac.new(key=key, msg=request.data, digestmod=hashlib.sha256).hexdigest()
+            incoming_signature = x_hub_signature_256.split('sha256=')[-1].strip()
+            if not hmac.compare_digest(incoming_signature, expected_signature):
+                return {"message": "x-hub-signature-256 invalid!"}, 401
+        except:
+            return {"message": "x-hub-signature-256 invalid!"}, 401
+        return f(*args, **kwargs)
+    return decorator
 
 
-# @app.post('/github')
 @app.route('/github', methods=['POST'])
+@validate_signature
 def webhook3():
-    if validate_signature():
-        event = request.json
-        print(event)
-        logger.info("====== event: %s ======", event)
-        return 'Hello azclitools!'
-    else:
-        return 'Error', 500
+    event = request.json
+    print(event)
+    logger.info("====== event: %s ======", event)
+    return 'Hello azclitools!'
 
 
 if __name__ == '__main__':
