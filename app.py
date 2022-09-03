@@ -4,6 +4,8 @@ from pull_request.pull_request import open_pull_request
 from scheduler import scheduler
 import logging
 import os
+import hmac
+import hashlib
 # import typing as t
 # from apiflask import APIFlask, HTTPBasicAuth
 # from werkzeug.security import generate_password_hash, check_password_hash
@@ -105,11 +107,6 @@ def webhook():
 # def verify_signature(payload_body):
 #   signature = 'sha256=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), ENV['SECRET_TOKEN'], payload_body)
 #   return halt 500, "Signatures didn't match!" unless Rack::Utils.secure_compare(signature, request.env['HTTP_X_HUB_SIGNATURE_256'])
-
-
-import hmac
-import hashlib
-from flask import request
 
 
 # x-hub-signature-256
