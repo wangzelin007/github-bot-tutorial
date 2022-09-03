@@ -14,6 +14,12 @@ import hashlib
 app = Flask(__name__)
 # app = APIFlask(__name__)
 # auth = HTTPBasicAuth()
+logging.basicConfig(
+    filename=os.getenv('LOG_FILE', './app.log'),
+    format='[%(asctime)s-%(filename)s-%(levelname)s:%(message)s]',
+    level = logging.DEBUG,
+    filemode='a',
+    datefmt='%Y-%m-%d %I:%M:%S %p')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
