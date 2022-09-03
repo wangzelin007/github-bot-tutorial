@@ -6,14 +6,14 @@ import logging
 import os
 import hmac
 import hashlib
-# import typing as t
-# from apiflask import APIFlask, HTTPBasicAuth
-# from werkzeug.security import generate_password_hash, check_password_hash
+import typing as t
+from apiflask import APIFlask, HTTPBasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
-app = Flask(__name__)
-# app = APIFlask(__name__)
-# auth = HTTPBasicAuth()
+# app = Flask(__name__)
+app = APIFlask(__name__)
+auth = HTTPBasicAuth()
 logging.basicConfig(
     filename=os.getenv('LOG_FILE', './app.log'),
     format='[%(asctime)s-%(filename)s-%(levelname)s:%(message)s]',
@@ -27,9 +27,9 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 
-# users = {
-#     'azclitools': generate_password_hash(os.getenv('GH_SECRET', 'secret string')),
-# }
+users = {
+    'azclitools': generate_password_hash(os.getenv('GH_SECRET', 'secret string')),
+}
 
 
 class Config(object):
@@ -86,36 +86,27 @@ def webhook():
         return 'Not support type'
 
 
-# test secret
-# for Azure DevOps
-# @app.route('/webhook2', methods=['POST'])
-# @app.auth_required(auth)
-# def webhook2():
-#     event = request.json
-#     print(event)
-#     logger.info("====== event: %s ======", event)
-#     return 'Hello azclitools!'
+# username: password for Azure DevOps
+@app.route('/webhook2', methods=['POST'])
+@app.auth_required(auth)
+def webhook2():
+    event = request.json
+    print(event)
+    logger.info("====== event: %s ======", event)
+    return 'Hello azclitools!'
 
 
-# @auth.verify_password
-# def verify_password(username: str, password: str) -> t.Union[str, None]:
-#     if (
-#         username in users
-#         and check_password_hash(users[username], password)
-#     ):
-#         return username
-#     return None
+@auth.verify_password
+def verify_password(username: str, password: str) -> t.Union[str, None]:
+    if (
+        username in users
+        and check_password_hash(users[username], password)
+    ):
+        return username
+    return None
 
 
-# test secret
-# for GitHub sha256
-
-# def verify_signature(payload_body):
-#   signature = 'sha256=' + OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha256'), ENV['SECRET_TOKEN'], payload_body)
-#   return halt 500, "Signatures didn't match!" unless Rack::Utils.secure_compare(signature, request.env['HTTP_X_HUB_SIGNATURE_256'])
-
-
-# x-hub-signature-256
+# GitHub secret: x-hub-signature-256
 def validate_signature():
     key = bytes(os.getenv('GH_SECRET', 'secret string'), 'utf-8')
     expected_signature = hmac.new(key=key, msg=request.data, digestmod=hashlib.sha256).hexdigest()
