@@ -129,9 +129,9 @@ def validate_signature():
 @app.route('/github', methods=['POST'])
 def webhook3():
     if validate_signature():
-        # event = request.json
-        # print(event)
-        # logger.info("====== event: %s ======", event)
+        event = request.json
+        print(event)
+        logger.info("====== event: %s ======", event)
         return 'Hello azclitools!'
     else:
         return 'Error', 500
