@@ -4,3 +4,4 @@ flask-apscheduler
 apiflask
 jsonify
 bunch
+SQLAlchemy
