@@ -108,7 +108,7 @@ def verify_password(username: str, password: str) -> t.Union[str, None]:
 
 
 # GitHub secret decorator
-def validate_signature(f):
+def verify_signature(f):
     @wraps(f)
     def decorator(*args, **kwargs):
         if 'x-hub-signature-256' in request.headers:
@@ -128,7 +128,7 @@ def validate_signature(f):
 
 
 @app.route('/github', methods=['POST'])
-@validate_signature
+@verify_signature
 def webhook3():
     event = request.json
     print(event)
