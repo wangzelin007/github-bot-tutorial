@@ -64,5 +64,4 @@ env.bak/
 venv.bak/
 
 flask_context.db
-
 *.log

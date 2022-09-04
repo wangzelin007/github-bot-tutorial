@@ -1,3 +1,8 @@
+# coding=utf-8
+
+from flask import Flask
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
 from flask_apscheduler import APScheduler
 import logging
 import datetime
@@ -15,6 +20,20 @@ logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
+
+
+class Config(object):
+    SCHEDULER_JOBSTORES = {
+        'default': SQLAlchemyJobStore(url='sqlite:///flask_context.db')
+    }
+    SCHEDULER_EXECUTORS = {
+        'default': {'type': 'threadpool', 'max_workers': 20}
+    }
+    SCHEDULER_JOB_DEFAULTS = {
+        'coalesce': False,
+        'max_instances': 3
+    }
+    SCHEDULER_API_ENABLED = True
 
 
 # Notify reviewer that milestone is less than ten days, need to review it ASAP
@@ -70,3 +89,8 @@ def job2():
             msg = 'Since this issue/pr was not resolved in the previous milestone, move it to the next milestone.'
             issues.comment_issue(comment_url, msg)
     logger.info('Execute crontab move_to_next_milestone success!')
+# @scheduler.task('interval', id='test', seconds=5, misfire_grace_time=900)
+# def job2():
+#     logger.info('Execute crontab test success!')
+#     from datetime import datetime
+#     logger.info(datetime.now())

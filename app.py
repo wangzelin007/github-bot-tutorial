@@ -75,8 +75,10 @@ def webhook():
         if action in ['opened']:
             if 'issue' in event.keys():
                 type = 'issue'
+                g._author = event['issue']['user']['login']
             elif 'pull_request' in event.keys():
                 type = 'pull_request'
+                g._author = event['pull_request']['user']['login']
             route_base_action(action, event, type)
             return 'Hello github, I am azure cli bot'
         else:
