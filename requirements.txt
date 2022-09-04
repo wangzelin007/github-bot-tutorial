@@ -5,3 +5,4 @@ apiflask
 jsonify
 bunch
 SQLAlchemy
+pymysql

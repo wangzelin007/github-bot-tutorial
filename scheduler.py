@@ -12,6 +12,7 @@ from issues import issues, labels
 from milestone import milestone
 from pull_request import pull_request
 from flask import g
+import os
 
 
 scheduler = APScheduler()
@@ -22,9 +23,15 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 
+USERNAME = os.getenv('BOT_DB_USER', 'secret string')
+PASSWORD = os.getenv('BOT_DB_PASS', 'secret string')
+
+
 class Config(object):
     SCHEDULER_JOBSTORES = {
-        'default': SQLAlchemyJobStore(url='sqlite:///flask_context.db')
+        # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://your-username:your-password@localhost/your-schema?ssl_ca=BaltimoreCyberTrustRoot.crt.pem'
+        # 'default': SQLAlchemyJobStore(url='sqlite:///flask_context.db')
+        'default': SQLAlchemyJobStore(url=f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=.github/DigiCertGlobalRootCA.crt.pem')
     }
     SCHEDULER_EXECUTORS = {
         'default': {'type': 'threadpool', 'max_workers': 20}
@@ -72,23 +79,23 @@ class Config(object):
 
 
 # Move unresolved PRs and issues from the previous milestone to the current milestone
-@scheduler.task('interval', id='move_to_next_milestone', seconds=5184000, misfire_grace_time=900)
-def job2():
-    previous_milestone = milestone.get_previous_milestone()
-    current_milestone = milestone.get_current_milestone()
-    issues_url = '/'.join([g.base_url, 'issues'])
-    if previous_milestone:
-        # get PRs and issues in the previous milestone
-        unresolved_items = issues.list_issues(issues_url, milestone=previous_milestone, state='opened')
-        for item in unresolved_items:
-            # set milestone to current_mileston
-            issue_url =  item['url']
-            issues.update_issue(issue_url, milestone=current_milestone)
-            # comment
-            comment_url = '/'.join([issue_url, 'comments'])
-            msg = 'Since this issue/pr was not resolved in the previous milestone, move it to the next milestone.'
-            issues.comment_issue(comment_url, msg)
-    logger.info('Execute crontab move_to_next_milestone success!')
+# @scheduler.task('interval', id='move_to_next_milestone', seconds=5184000, misfire_grace_time=900)
+# def job2():
+#     previous_milestone = milestone.get_previous_milestone()
+#     current_milestone = milestone.get_current_milestone()
+#     issues_url = '/'.join([g.base_url, 'issues'])
+#     if previous_milestone:
+#         # get PRs and issues in the previous milestone
+#         unresolved_items = issues.list_issues(issues_url, milestone=previous_milestone, state='opened')
+#         for item in unresolved_items:
+#             # set milestone to current_mileston
+#             issue_url =  item['url']
+#             issues.update_issue(issue_url, milestone=current_milestone)
+#             # comment
+#             comment_url = '/'.join([issue_url, 'comments'])
+#             msg = 'Since this issue/pr was not resolved in the previous milestone, move it to the next milestone.'
+#             issues.comment_issue(comment_url, msg)
+#     logger.info('Execute crontab move_to_next_milestone success!')
 # @scheduler.task('interval', id='test', seconds=5, misfire_grace_time=900)
 # def job2():
 #     logger.info('Execute crontab test success!')

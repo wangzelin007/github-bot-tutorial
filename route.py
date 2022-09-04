@@ -340,9 +340,9 @@ def _add_job(job_id, type, seconds, func, args, kwargs):
 
 if __name__ == '__main__':
     from common.log import dictConfig
-    # app.config.from_object(Config())
-    # scheduler.init_app(app)
-    # scheduler.start()
-    # app.run(debug=True)
+    app.config.from_object(Config())
+    scheduler.init_app(app)
+    scheduler.start()
+    app.run()
     # test_struct()
-    get_file_from_github()
+    # get_file_from_github()
