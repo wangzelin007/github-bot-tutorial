@@ -37,6 +37,36 @@ class Config(object):
     SCHEDULER_API_ENABLED = True
 
 
+# GitHub secret decorator
+def verify_signature(f):
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        if 'x-hub-signature-256' in request.headers:
+            x_hub_signature_256 = request.headers.get('x-hub-signature-256')
+        if not x_hub_signature_256:
+            return {"message": "x-hub-signature-256 is missing!"}, 401
+        try:
+            key = bytes(os.getenv('GH_SECRET', 'secret string'), 'utf-8')
+            expected_signature = hmac.new(key=key, msg=request.data, digestmod=hashlib.sha256).hexdigest()
+            incoming_signature = x_hub_signature_256.split('sha256=')[-1].strip()
+            if not hmac.compare_digest(incoming_signature, expected_signature):
+                return {"message": "x-hub-signature-256 invalid!"}, 401
+        except:
+            return {"message": "x-hub-signature-256 invalid!"}, 401
+        return f(*args, **kwargs)
+    return decorator
+
+
+@auth.verify_password
+def verify_password(username: str, password: str) -> t.Union[str, None]:
+    if (
+        username in users
+        and check_password_hash(users[username], password)
+    ):
+        return username
+    return None
+
+
 def route_base_action(action, event, type):
     """
     route an issue base on action.
@@ -63,7 +93,9 @@ def route_base_action(action, event, type):
         raise e
 
 
-@app.route('/webhook', methods=['POST'])
+# github webhook with secret
+@app.route('/github', methods=['POST'])
+@verify_signature
 def webhook():
     event_type = request.headers.get('X-GitHub-Event')
     logger.info("====== event type: %s ======" % event_type)
@@ -89,8 +121,8 @@ def webhook():
         return 'Not support type'
 
 
-# username: password for Azure DevOps
-@app.route('/webhook2', methods=['POST'])
+# Azure DevOps webhook with username:password
+@app.route('/devops', methods=['POST'])
 @app.auth_required(auth)
 def webhook2():
     event = request.json
@@ -99,37 +131,7 @@ def webhook2():
     return 'Hello azclitools!'
 
 
-@auth.verify_password
-def verify_password(username: str, password: str) -> t.Union[str, None]:
-    if (
-        username in users
-        and check_password_hash(users[username], password)
-    ):
-        return username
-    return None
-
-
-# GitHub secret decorator
-def verify_signature(f):
-    @wraps(f)
-    def decorator(*args, **kwargs):
-        if 'x-hub-signature-256' in request.headers:
-            x_hub_signature_256 = request.headers.get('x-hub-signature-256')
-        if not x_hub_signature_256:
-            return {"message": "x-hub-signature-256 is missing!"}, 401
-        try:
-            key = bytes(os.getenv('GH_SECRET', 'secret string'), 'utf-8')
-            expected_signature = hmac.new(key=key, msg=request.data, digestmod=hashlib.sha256).hexdigest()
-            incoming_signature = x_hub_signature_256.split('sha256=')[-1].strip()
-            if not hmac.compare_digest(incoming_signature, expected_signature):
-                return {"message": "x-hub-signature-256 invalid!"}, 401
-        except:
-            return {"message": "x-hub-signature-256 invalid!"}, 401
-        return f(*args, **kwargs)
-    return decorator
-
-
-@app.route('/github', methods=['POST'])
+@app.route('/test', methods=['POST'])
 @verify_signature
 def webhook3():
     event = request.json
