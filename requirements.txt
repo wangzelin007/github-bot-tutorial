@@ -6,3 +6,4 @@ jsonify
 bunch
 SQLAlchemy
 pymysql
+flask_sqlalchemy

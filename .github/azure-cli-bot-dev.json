@@ -140,43 +140,5 @@
         }
       ]
     },
-    {
-      "taskName": "move issue/pr to next milestone",
-      "taskType": "scheduled",
-      "frequency": [
-        {
-          "type": "interval",
-          "days": 1
-        }
-      ],
-      "conditions": [
-        {
-          "name": "list_issues",
-          "parameters": {
-            "milestone": "previous_milestone",
-            "state": "opened"
-          },
-          "set_variable": {
-            "$(urls)": "[i.url for i in r]"
-          },
-          "actions": [
-            {
-              "name": "set_milestone",
-              "parameters": {
-                "milestone": "current_milestone",
-                "urls": "$(urls)"
-              }
-            },
-            {
-              "name": "add_reply",
-              "parameters": {
-                "comment": "Hi @{author},\nSince this issue/pr was not resolved in the previous milestone, move it to the next milestone.",
-                "urls": "$(urls)"
-              }
-            }
-          ]
-        }
-      ]
-    }
   ]
 }

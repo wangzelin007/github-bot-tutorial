@@ -10,9 +10,13 @@ import typing as t
 from apiflask import APIFlask, HTTPBasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from db.models import db
 
 
-# app = Flask(__name__)
+# USERNAME = os.getenv('BOT_DB_USER', 'secret string')
+# PASSWORD = os.getenv('BOT_DB_PASS', 'secret string')
+
+
 app = APIFlask(__name__)
 auth = HTTPBasicAuth()
 logging.basicConfig(
@@ -35,6 +39,13 @@ users = {
 
 class Config(object):
     SCHEDULER_API_ENABLED = True
+    # SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=DigiCertGlobalRootCA.crt.pem'
+    # SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+@app.before_first_request
+def init_database():
+    db.create_all()
 
 
 # GitHub secret decorator
