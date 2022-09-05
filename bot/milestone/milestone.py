@@ -2,7 +2,7 @@
 import datetime
 import logging
 # import requests
-from common.request_client import RequestHandler
+from bot.common.request_client import RequestHandler
 from flask import g
 
 

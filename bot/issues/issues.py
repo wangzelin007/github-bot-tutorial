@@ -1,8 +1,8 @@
-import constant
+from bot import constant
 import logging
 import requests
-from milestone import milestone
-from common.request_client import RequestHandler
+from bot.milestone import milestone
+from bot.common.request_client import RequestHandler
 
 
 logger = logging.getLogger(__name__)

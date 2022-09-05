@@ -1,10 +1,10 @@
-import constant
+import bot.constant
 import logging
 import requests
-import issues.issues
-from milestone import milestone
-from issues import issues
-from common.request_client import RequestHandler
+import bot.issues.issues
+from bot.milestone import milestone
+from bot.issues import issues
+from bot.common.request_client import RequestHandler
 
 
 logger = logging.getLogger(__name__)

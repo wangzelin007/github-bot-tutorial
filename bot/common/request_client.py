@@ -1,5 +1,5 @@
 import requests
-from constant import HEADERS
+from bot.constant import HEADERS
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,9 +14,11 @@ class RequestHandler:
         self.s = requests.session()
         self.headers = HEADERS
 
-    def visit(self, method, url, params=None, data=None, json=None, **kwargs):
+    def visit(self, method, url, params=None, data=None, json=None, headers=None, **kwargs):
         with self.s:
             try:
+                if headers:
+                    self.headers = {**self.headers, **headers}
                 r = requests.session().request(method, url, params=params, data=data, json=json, headers=self.headers,
                                                **kwargs)
                 logger.debug('status_code: %s', r.status_code)

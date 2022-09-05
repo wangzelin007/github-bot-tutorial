@@ -7,10 +7,10 @@ from flask_apscheduler import APScheduler
 import logging
 import datetime
 
-import constant
-from issues import issues, labels
-from milestone import milestone
-from pull_request import pull_request
+import bot.constant
+from bot.issues import issues, labels
+from bot.milestone import milestone
+from bot.pull_request import pull_request
 from flask import g
 import os
 

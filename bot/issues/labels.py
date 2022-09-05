@@ -1,5 +1,5 @@
 import logging
-from common.request_client import RequestHandler
+from bot.common.request_client import RequestHandler
 
 
 logger = logging.getLogger(__name__)
