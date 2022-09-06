@@ -1,0 +1,144 @@
+{
+  "tasks": [
+    {
+      "taskName": "open pull request",
+      "taskType": "trigger",
+      "eventType": "pull_request",
+      "eventAction": "opened",
+      "conditions": [
+        {
+          "name": "more_than_x_days",
+          "parameters": {
+            "x_days": 21
+          },
+          "set_variable": {
+            "$(x_days)": "p.x_days"
+          },
+          "actions": [
+            {
+              "name": "set_milestone",
+              "parameters": {
+                "milestone": "current_milestone"
+              }
+            },
+            {
+              "name": "set_milestone",
+              "parameters": {
+                "milestone": "next_milestone"
+              },
+              "reversed": "true"
+            },
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nSince the current milestone time is less than $(x_days) days, this pr will be reviewed in the next milestone!"
+              },
+              "reversed": "true"
+            }
+          ]
+        },
+        {
+          "operator": "and",
+          "operands": [
+            {
+              "operator": "not",
+              "operands": [
+                {
+                  "name": "search_file",
+                  "parameters": {
+                    "search_file": "index.json"
+                  }
+                }
+              ]
+            },
+            {
+              "operator": "not",
+              "operands": [
+                {
+                  "operator": "and",
+                  "operands": [
+                    {
+                      "name": "search_file",
+                      "parameters": {
+                        "search_file": "setup.py"
+                      }
+                    },
+                    {
+                      "name": "search_file",
+                      "parameters": {
+                        "search_file": "HISTORY.rst"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "actions": [
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nIf you want to release the new extension version, please write the description of changes into HISTORY.rst and update setup.py."
+              }
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "add_reply",
+          "parameters": {
+            "comment": "Thanks for the contribution @{author}!"
+          }
+        }
+      ]
+    },
+    {
+      "taskName": "open issue",
+      "taskType": "trigger",
+      "eventType": "issue",
+      "eventAction": "opened",
+      "conditions": [
+        {
+          "name": "more_than_x_days",
+          "parameters": {
+            "x_days": 7
+          },
+          "set_variable": {
+            "$(x_days)": "p.x_days"
+          },
+          "actions": [
+            {
+              "name": "set_milestone",
+              "parameters": {
+                "milestone": "current_milestone"
+              }
+            },
+            {
+              "name": "set_milestone",
+              "parameters": {
+                "milestone": "next_milestone"
+              },
+              "reversed": "true"
+            },
+            {
+              "name": "add_reply",
+              "parameters": {
+                "comment": "Hi @{author},\nSince the current milestone time is less than $(x_days) days, this issue will be resolved in the next milestone"
+              },
+              "reversed": "true"
+            }
+          ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "add_reply",
+          "parameters": {
+            "comment": "Thanks for the report @{author}! We will look into it ASAP!"
+          }
+        }
+      ]
+    }
+  ]
+}
