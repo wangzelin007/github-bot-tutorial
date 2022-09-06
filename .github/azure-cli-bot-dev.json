@@ -96,7 +96,7 @@
     {
       "taskName": "open issue",
       "taskType": "trigger",
-      "eventType": "issue",
+      "eventType": "issues",
       "eventAction": "opened",
       "conditions": [
         {
