@@ -45,7 +45,8 @@ class Config(object):
 
 @app.before_first_request
 def init_database():
-    db.create_all()
+    pass
+    # db.create_all()
 
 
 # GitHub secret decorator
