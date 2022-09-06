@@ -8,9 +8,7 @@ import logging
 import datetime
 
 import bot.constant
-from bot.issues import issues, labels
-from bot.milestone import milestone
-from bot.pull_request import pull_request
+from bot.github_api import issues, pull_request, labels, milestone
 from flask import g
 import os
 

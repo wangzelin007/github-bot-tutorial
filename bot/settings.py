@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-# from bot.models import BaseResponseSchema
 
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -16,6 +15,15 @@ class BaseConfig(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_RECORD_QUERIES = True
     BASE_RESPONSE_SCHEMA = None
+
+    CACHE_TYPE = 'FileSystemCache'
+    CACHE_ARGS = []
+    CACHE_OPTIONS = {}
+    CACHE_DEFAULT_TIMEOUT = 36000
+    CACHE_IGNORE_ERRORS = True
+    CACHE_THRESHOLD = 100
+    CACHE_DIR = 'cache'
+
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=DigiCertGlobalRootCA.crt.pem'

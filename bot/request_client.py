@@ -3,10 +3,6 @@ from bot.constant import HEADERS
 import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-logger.addHandler(ch)
 
 
 class RequestHandler:
@@ -19,9 +15,12 @@ class RequestHandler:
             try:
                 if headers:
                     self.headers = {**self.headers, **headers}
+                logger.info("====== request headers: %s ======", self.headers)
                 r = requests.session().request(method, url, params=params, data=data, json=json, headers=self.headers,
                                                **kwargs)
-                logger.debug('status_code: %s', r.status_code)
+                if r.status_code >= 400:
+                    logger.debug('status_code: %s', r.status_code)
+                    raise requests.RequestException
             except requests.RequestException as e:
                 logger.debug('response: %s', r)
                 logger.debug('code: %s', r.status_code)

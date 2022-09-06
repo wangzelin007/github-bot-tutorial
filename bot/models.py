@@ -1,9 +1,7 @@
-from bot.extensions import db
-from apiflask import APIFlask, Schema
+from apiflask import Schema
 from sqlalchemy.databases import mysql
-import os
 from apiflask.fields import Integer, String, Field
-import json
+from bot.extensions import db
 
 
 class ConfigModel(db.Model):

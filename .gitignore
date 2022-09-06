@@ -50,6 +50,8 @@ coverage.xml
 # Flask stuff:
 instance/
 .webassets-cache
+logs/
+cache/
 
 # pyenv
 .python-version
@@ -62,6 +64,3 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
-flask_context.db
-*.log

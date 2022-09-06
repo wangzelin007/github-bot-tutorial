@@ -1,13 +1,6 @@
-Flask==2.0.2
-requests
-apiflask
-jsonify
-bunch
-SQLAlchemy
-pymysql
 alembic
-python-dotenv
-
+apiflask
+bunch
 flask-apscheduler
 flask-ckeditor
 flask-debugtoolbar
@@ -17,3 +10,10 @@ flask-migrate
 flask-moment
 flask-sqlalchemy
 flask-wtf
+Flask
+jsonify
+pymysql
+python-dotenv
+requests
+SQLAlchemy
+Flask-Caching

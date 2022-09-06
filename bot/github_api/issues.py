@@ -1,15 +1,11 @@
 from bot import constant
 import logging
 import requests
-from bot.milestone import milestone
-from bot.common.request_client import RequestHandler
+from bot.github_api import milestone
+from bot.request_client import RequestHandler
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-logger.addHandler(ch)
 requestClient = RequestHandler()
 
 

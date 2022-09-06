@@ -1,7 +1,7 @@
 from flask import Flask, request, g
-from scheduler import scheduler, Config
+from bot.scheduler import scheduler, Config
 import os
-from constant import HEADERS
+from bot.constant import HEADERS
 import requests
 import json
 

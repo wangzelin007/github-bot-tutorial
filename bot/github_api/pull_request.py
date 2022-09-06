@@ -1,10 +1,6 @@
-import bot.constant
 import logging
-import requests
-import bot.issues.issues
-from bot.milestone import milestone
-from bot.issues import issues
-from bot.common.request_client import RequestHandler
+from bot.github_api import milestone, issues
+from bot.request_client import RequestHandler
 
 
 logger = logging.getLogger(__name__)

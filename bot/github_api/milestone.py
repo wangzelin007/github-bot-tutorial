@@ -1,16 +1,11 @@
 # import constant
 import datetime
 import logging
-# import requests
-from bot.common.request_client import RequestHandler
+from bot.request_client import RequestHandler
 from flask import g
 
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-logger.addHandler(ch)
 requestClient = RequestHandler()
 
 

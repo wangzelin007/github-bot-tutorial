@@ -2,10 +2,6 @@ import logging
 import re
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-logger.addHandler(ch)
 
 
 def get_latest_from_github(package_path='azure-cli'):

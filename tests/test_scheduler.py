@@ -6,11 +6,9 @@ from flask_apscheduler import APScheduler
 import logging
 import datetime
 
-import constant
-from issues import issues, labels
-from milestone import milestone
-from pull_request import pull_request
-from route import parse_json_file
+from bot import constant
+from bot.blueprints import issues, labels, milestone, pull_request
+from bot.route import parse_json_file
 import os
 
 
@@ -29,8 +27,8 @@ PASSWORD = os.getenv('BOT_DB_PASS', 'secret string')
 
 class Config(object):
     SCHEDULER_JOBSTORES = {
-        # 'default': SQLAlchemyJobStore(url='sqlite:///flask_context.db')
-        'default': SQLAlchemyJobStore(url=f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=.github/DigiCertGlobalRootCA.crt.pem')
+        'default': SQLAlchemyJobStore(url='sqlite:///flask_context.db')
+        # 'default': SQLAlchemyJobStore(url=f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=.github/DigiCertGlobalRootCA.crt.pem')
     }
     SCHEDULER_EXECUTORS = {
         'default': {'type': 'threadpool', 'max_workers': 20}
