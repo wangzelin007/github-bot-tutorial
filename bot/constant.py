@@ -2,7 +2,7 @@ import os
 import logging
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('bot')
 
 
 GH_SECRET = os.environ.get("GH_SECRET")

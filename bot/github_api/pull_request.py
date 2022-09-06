@@ -3,11 +3,7 @@ from bot.github_api import milestone, issues
 from bot.request_client import RequestHandler
 
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-logger.addHandler(ch)
+logger = logging.getLogger('bot')
 requestClient = RequestHandler()
 
 

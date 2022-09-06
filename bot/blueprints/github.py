@@ -23,9 +23,10 @@ from bot.mapping import func_mapping
 
 
 github_bp = APIBlueprint('github', __name__)
-app = APIFlask(__name__)
+app = APIFlask('bot')
 auth = HTTPBasicAuth()
 requestClient = RequestHandler()
+logger = logging.getLogger('bot')
 
 
 users = {
@@ -137,6 +138,7 @@ def webhook():
         g.base_url = event['repository']['url']
         g.owner = g.base_url.split('/')[4]
         g.repo = g.base_url.split('/')[5]
+        g.config_url = '/'.join([CONFIG_BASE_URL, g.owner, g.repo, CONFIG_URL_POSTFIX])
         app.logger.info("====== event: %s ======" % event)
         action = event['action']
         if action in ['opened']:
@@ -146,13 +148,14 @@ def webhook():
             elif 'pull_request' in event.keys():
                 type = 'pull_request'
                 g._author = event['pull_request']['user']['login']
-            route_base_action(action, event, type)
+            # route_base_action(action, event, type)
             config = cache.get('_'.join([g.owner, g.repo]).replace('-', '_'))
+            if not config:
+                update_config(g.owner, g.repo)
             parse_json(config)
             return 'Hello github, I am azure cli bot'
         elif action == 'closed' and event_type == 'pull_request' and event['pull_request']['merged']:
             # https://raw.github.com/{OWNER}/{REPO}/HEAD/.github/azure-cli-bot-dev.json
-            g.config_url = '/'.join([CONFIG_BASE_URL, g.owner, g.repo, CONFIG_URL_POSTFIX])
             update_config(g.owner, g.repo)
         else:
             app.logger.info("====== unsupported action: %s %s======", event_type, action)

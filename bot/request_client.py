@@ -2,7 +2,7 @@ import requests
 from bot.constant import HEADERS
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('bot')
 
 
 class RequestHandler:
@@ -15,7 +15,7 @@ class RequestHandler:
             try:
                 if headers:
                     self.headers = {**self.headers, **headers}
-                logger.info("====== request headers: %s ======", self.headers)
+                # logger.info("====== request headers: %s ======", self.headers)
                 r = requests.session().request(method, url, params=params, data=data, json=json, headers=self.headers,
                                                **kwargs)
                 if r.status_code >= 400:

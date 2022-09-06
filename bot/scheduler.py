@@ -14,11 +14,7 @@ import os
 
 
 scheduler = APScheduler()
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-logger.addHandler(ch)
+logger = logging.getLogger('bot')
 
 
 USERNAME = os.getenv('BOT_DB_USER', 'secret string')

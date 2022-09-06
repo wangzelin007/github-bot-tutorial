@@ -1,7 +1,7 @@
 import logging
 import re
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('bot')
 
 
 def get_latest_from_github(package_path='azure-cli'):

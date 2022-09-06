@@ -5,7 +5,7 @@ from bot.github_api import milestone
 from bot.request_client import RequestHandler
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('bot')
 requestClient = RequestHandler()
 
 

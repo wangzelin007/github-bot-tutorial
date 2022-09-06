@@ -5,7 +5,7 @@ from bot.request_client import RequestHandler
 from flask import g
 
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('bot')
 requestClient = RequestHandler()
 
 
