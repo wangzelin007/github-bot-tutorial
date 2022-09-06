@@ -1,25 +1,22 @@
 # -*- coding: utf-8 -*-
-import os
-from bot.extensions import db, cache
-from bot import database
-from flask import Flask, request, g, url_for
-from bot.github_api.issues import open_issue
-from bot.github_api.pull_request import open_pull_request
-from bot.scheduler import scheduler
-import os
-import hmac
-import hashlib
-import typing as t
 from apiflask import APIFlask, HTTPBasicAuth, APIBlueprint
-from werkzeug.security import generate_password_hash, check_password_hash
-from functools import wraps
-from bot.models import ConfigModel, ConfigOutSchema, EnvModel, EnvOutSchema
-import json
-from bot.request_client import RequestHandler
-from flask_sqlalchemy import SQLAlchemy
-import logging
+from bot import database
 from bot.constant import CONFIG_BASE_URL, CONFIG_URL_POSTFIX
+from bot.extensions import db, cache
 from bot.mapping import func_mapping
+from bot.models import ConfigOutSchema, EnvOutSchema
+from bot.request_client import RequestHandler
+from bot.scheduler import scheduler
+from flask import Flask, request, g, url_for
+from flask_sqlalchemy import SQLAlchemy
+from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
+import hashlib
+import hmac
+import json
+import logging
+import os
+import typing as t
 
 
 github_bp = APIBlueprint('github', __name__)
@@ -39,17 +36,57 @@ def init_database():
     db.create_all()
 
 
+@github_bp.before_request
+def init_kwargs():
+    g.kwargs = {}
+    g.event_type = request.headers.get('X-GitHub-Event')
+    event = request.json
+    g.action = event['action']
+    if (g.event_type == 'issues' and g.action == 'opened') or \
+        (g.event_type == 'pull_request' and g.action in ['opened', 'closed']):
+        # https://api.github.com/repos/{OWNER}/{REPO}
+        g.base_url = event['repository']['url']
+        g.owner = g.base_url.split('/')[4]
+        g.repo = g.base_url.split('/')[5]
+        # https://https://raw.github.com/repos/{OWNER}/{REPO}/HEAD/.github/azure-cli-bot-dev.json
+        g.config_url = '/'.join([CONFIG_BASE_URL, g.owner, g.repo, CONFIG_URL_POSTFIX])
+        # {OWNER}_{REPO}
+        g.config_cache = '_'.join([g.owner, g.repo]).replace('-', '_')
+
+        if g.event_type == 'issues':
+            g.kwargs['author'] = event['issue']['user']['login']
+            g.created_at = event['issue']['created_at']
+            g.issue_url = event['issue']['url']
+            g.milestone_url = g.issue_url
+
+        elif g.event_type == 'pull_request':
+            g.kwargs['author'] = event['pull_request']['user']['login']
+            g.created_at = event['pull_request']['created_at']
+            g.pull_request_url = event['pull_request']['url']
+            g.issue_url = event['pull_request']['issue_url']
+            g.milestone_url = g.issue_url
+            g.pull_request_files_url
+
+    else:
+        app.logger.info("====== unsupported event %s action %s ======", g.event_type, g.action)
+        return 'Unsupported GitHub event'
+
+
 def update_config(owner, repo):
-    # update when pr merged
     repo_db = database.get_env(owner, repo)
     if repo_db:
         etag, config = get_file_from_github(g.config_url,repo_db.etag)
     else:
         etag, config = get_file_from_github(g.config_url)
     if etag and config:
-        repo_db = database.update_env(owner, repo, etag)
-        config_db = database.add_config(owner, repo, config)
+        if repo_db:
+            database.update_env(owner, repo, etag)
+            database.update_config(owner, repo, config)
+        else:
+            database.add_env(owner, repo, etag)
+            database.add_config(owner, repo, config)
         cache.set('_'.join([owner, repo]).replace('-', '_'), config)
+        return
         # TODO: update Schedule job
         # TODO: trigger azure-cli-bot.json 发生变化
         # TODO: 判断是否 scheduled task 发生变化
@@ -101,68 +138,20 @@ def verify_password(username: str, password: str) -> t.Union[str, None]:
     return None
 
 
-def route_base_action(action, event, type):
-    """
-    route an issue base on action.
-    """
-    # issues:
-    # opened, edited, deleted, pinned, unpinned, closed, reopened, assigned, unassigned,
-    # labeled, unlabeled, locked, unlocked, transferred, milestoned, or demilestoned
-    # pull requests:
-    # assigned, auto_merge_disabled, auto_merge_enabled, closed, converted_to_draft
-    # edited, labeled, locked, opened, ready_for_review, reopened, review_request_removed
-    # review_requested, synchronize, unassigned, unlabeled, unlocked
-    action_map = {
-        'issue': {
-            'opened': open_issue,
-        },
-        'pull_request': {
-            "opened": open_pull_request,
-        }
-    }
-    app.logger.info("====== action: %s ======" % action)
-    try:
-        action_map[type][action](event)
-    except Exception as e:
-        raise e
-
-
 # github webhook with secret
 @github_bp.route('/github', methods=['POST'])
 @verify_signature
 def webhook():
-    event_type = request.headers.get('X-GitHub-Event')
-    app.logger.info("====== event type: %s ======" % event_type)
-    if event_type in ['pull_request', 'issues']:
-        event = request.json
-        g.base_url = event['repository']['url']
-        g.owner = g.base_url.split('/')[4]
-        g.repo = g.base_url.split('/')[5]
-        g.config_url = '/'.join([CONFIG_BASE_URL, g.owner, g.repo, CONFIG_URL_POSTFIX])
-        app.logger.info("====== event: %s ======" % event)
-        action = event['action']
-        if action in ['opened']:
-            if 'issue' in event.keys():
-                type = 'issue'
-                g._author = event['issue']['user']['login']
-            elif 'pull_request' in event.keys():
-                type = 'pull_request'
-                g._author = event['pull_request']['user']['login']
-            # route_base_action(action, event, type)
-            config = cache.get('_'.join([g.owner, g.repo]).replace('-', '_'))
-            if not config:
-                update_config(g.owner, g.repo)
-            parse_json(config)
-            return 'Hello github, I am azure cli bot'
-        elif action == 'closed' and event_type == 'pull_request' and event['pull_request']['merged']:
-            # https://raw.github.com/{OWNER}/{REPO}/HEAD/.github/azure-cli-bot-dev.json
+    event = request.json
+    if g.event_type in ['pull_request', 'issues'] and g.action == 'opened':
+        config = cache.get(g.config_cache)
+        if not config:
             update_config(g.owner, g.repo)
-        else:
-            app.logger.info("====== unsupported action: %s %s======", event_type, action)
-            return 'Not support action'
-    else:
-        app.logger.info("====== unsupported event type: %s ======", event_type)
-        return 'Not support type'
+        parse_json(cache.get(g.config_cache))
+        return 'Hello github, I am azure cli bot'
+    elif g.event_type == 'pull_request' and g.action == 'closed' and event['pull_request']['merged']:
+        # https://raw.github.com/{OWNER}/{REPO}/HEAD/.github/azure-cli-bot-dev.json
+        update_config(g.owner, g.repo)
 
 
 def struct(**entries):
@@ -185,12 +174,14 @@ def exec_function(func, **parameters):
 
 def get_variable(task_id, string):
     import re
+    # $(x_days) -> x_days
     regex = r"\$\(.*\)"
     if isinstance(string, str):
         matches = re.finditer(regex, string, re.MULTILINE)
         for matchNum, match in enumerate(matches, start=1):
             app.logger.info("====== find variable: %s ======" % string[match.start()+2: match.end()-1])
-            variable =  string[match.start()+2: match.end()-1]
+            variable = string[match.start()+2: match.end()-1]
+            # g.owner_repo_1_x_days
             uq_variable = '_'.join([g.owner, g.repo, task_id, variable]).replace('-', '_')
             return variable, uq_variable
 
@@ -199,7 +190,7 @@ def dfs_op(task_id, root):
     if 'operator' not in root:
         func = root['name']
         parameters = root['parameters']
-        parameters = parse_parameters(task_id, parameters, **kwargs)
+        parameters = parse_parameters(task_id, parameters, **g.kwargs)
         p = struct(**parameters)
         r = exec_function(func, **parameters)
         flag = True if r else False
@@ -245,7 +236,7 @@ def parse_json(config):
     app.logger.info("====== load config %s ======" % json.dumps(config, indent=2))
     # TODO load parameters to kwargs
     for task_id, task in enumerate(config['tasks']):
-        if task['taskType'] == 'trigger':
+        if task['taskType'] == 'trigger' and task['eventType'] == g.event_type:
             task_id = str(task_id)
             for condition in task['conditions']:
                 operator = condition.get('operator', None)
@@ -254,7 +245,7 @@ def parse_json(config):
                 else:
                     func = condition['name']
                     parameters = condition['parameters']
-                    parameters = parse_parameters(task_id, parameters, **kwargs)
+                    parameters = parse_parameters(task_id, parameters, **g.kwargs)
                     p = struct(**parameters)
                     r = exec_function(func, **parameters)
                     flag = True if r else False
@@ -269,7 +260,7 @@ def parse_json(config):
                         if not reversed:
                             func = action['name']
                             parameters = action['parameters']
-                            parameters = parse_parameters(task_id, parameters, **kwargs)
+                            parameters = parse_parameters(task_id, parameters, **g.kwargs)
                             exec_function(func, **parameters)
                 # flag = False and reversed = True
                 if not flag and 'actions' in condition:
@@ -278,14 +269,14 @@ def parse_json(config):
                         if reversed:
                             func = action['name']
                             parameters = action['parameters']
-                            parameters = parse_parameters(task_id, parameters, **kwargs)
+                            parameters = parse_parameters(task_id, parameters, **g.kwargs)
                             exec_function(func, **parameters)
 
             if 'actions' in task:
                 for action in task['actions']:
                     func = action['name']
                     parameters = action['parameters']
-                    parameters = parse_parameters(task_id, parameters, **kwargs)
+                    parameters = parse_parameters(task_id, parameters, **g.kwargs)
                     exec_function(func, **parameters)
 
 

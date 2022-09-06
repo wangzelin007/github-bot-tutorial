@@ -1,5 +1,6 @@
 import logging
 from bot.request_client import RequestHandler
+from flask import g
 
 
 logger = logging.getLogger('bot')

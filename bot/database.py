@@ -1,5 +1,6 @@
 from bot.models import ConfigModel, EnvModel
 from bot.extensions import db
+import json
 
 
 def list_config():
@@ -13,6 +14,8 @@ def get_config(owner, repo):
 
 
 def add_config(owner, repo, config):
+    if not isinstance(config, str):
+        config = json.dumps(config)
     data = {
         "owner": owner,
         "repo": repo,
@@ -34,17 +37,20 @@ def get_env(owner, repo):
     return data
 
 
-def add_env(owner, repo, etag, config_url, base_url, issue_url, pr_url):
+def add_env(owner, repo, etag):
     data = {
-        "owner": "wangzelin007",
-        "repo": "github-bot-tutorial",
-        "etag": "etag",
-        "config_url": "g.config_url",
-        "base_url": "g.config_url",
-        "issue_url": "g.config_url",
-        "pr_url": "g.config_url"
+        "owner": owner,
+        "repo": repo,
+        "etag": etag
     }
     db_data = EnvModel(**data)
     db.session.add(db_data)
+    db.session.commit()
+    return db_data
+
+
+def update_env(owner, repo, etag):
+    db_data = EnvModel.query.filter_by(owner=owner, repo=repo).first()
+    db_data.etag = etag
     db.session.commit()
     return db_data

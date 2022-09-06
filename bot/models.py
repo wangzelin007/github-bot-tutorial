@@ -19,18 +19,10 @@ class ConfigOutSchema(Schema):
 class EnvModel(db.Model):
     owner = db.Column(db.String(36), primary_key=True)
     repo = db.Column(db.String(36), primary_key=True)
-    etag = db.Column(db.String(36))
-    config_url = db.Column(db.String(128))
-    base_url = db.Column(db.String(36))
-    issue_url = db.Column(db.String(36))
-    pr_url = db.Column(db.String(36))
+    etag = db.Column(db.String(72))
 
 
 class EnvOutSchema(Schema):
     owner = String()
     repo = String()
     etag = String()
-    config_url = String()
-    base_url = String()
-    issue_url = String()
-    pr_url = String()

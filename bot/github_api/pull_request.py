@@ -1,6 +1,7 @@
 import logging
 from bot.github_api import milestone, issues
 from bot.request_client import RequestHandler
+from flask import g
 
 
 logger = logging.getLogger('bot')
@@ -65,6 +66,14 @@ def list_pull_request_files(url):
     r = requestClient.visit('GET', url)
     files = [i['filename'] for i in r.json()]
     return files
+
+
+def search_file_in_pull_request(search_file):
+    # https://api.github.com/repos/{OWNER}/{REPO}/pulls/{NUMBER}
+    pull_request_files = list_pull_request_files(g.pull_request_files_url)
+    if search_file in pull_request_files:
+        return True
+    return False
 
 
 def search_files_in_pull_request(url, search_files):

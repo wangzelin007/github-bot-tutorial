@@ -72,7 +72,6 @@ def parse_json_file(file='.github/azure-cli-bot.json'):
     with open(file, 'r') as configfile:
         config = json.load(configfile)
         app.logger.info("====== load config %s ======" % json.dumps(config, indent=2))
-        # TODO load parameters to kwargs
         for task_id, task in enumerate(config['tasks']):
             if task['taskType'] == 'trigger':
                 task_id = str(task_id)

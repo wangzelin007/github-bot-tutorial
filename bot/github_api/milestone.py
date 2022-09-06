@@ -1,38 +1,38 @@
-# import constant
-import datetime
-import logging
+from bot.github_api.issues import update_issue
 from bot.request_client import RequestHandler
 from flask import g
+import datetime
+import logging
 
 
 logger = logging.getLogger('bot')
 requestClient = RequestHandler()
 
 
-def select_milestone(created_at, author, ms_type):
-    # Less than three weeks: put into the next milestone with a warning message
-    # More than three week: put into the current milestone
-    current_milestone = get_current_milestone()
-    next_milestone = get_next_milestone()
-    created_at = datetime.datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
-    if ms_type == 'issue':
-        if get_remain_days_of_current_milestone(current_milestone, created_at) > 21:
-            msg = None
-            return current_milestone, msg
-        else:
-            msg = f"Hi @{author}, Since the current milestone time is less than 21 days, " \
-                  f"this issue will be resolved in the next milestone"
-            return next_milestone, msg
-    # Less than a week: put into the next milestone with a warning message
-    # More than a week: put into the current milestone
-    if ms_type == 'pull_request':
-        if get_remain_days_of_current_milestone(current_milestone, created_at) > 7:
-            msg = None
-            return current_milestone, msg
-        else:
-            msg = f"Hi @{author}, Since the current milestone time is less than 7 days, " \
-                  f"this pr will be reviewed in the next milestone"
-            return next_milestone, msg
+# def select_milestone(created_at, author, ms_type):
+#     # Less than three weeks: put into the next milestone with a warning message
+#     # More than three week: put into the current milestone
+#     current_milestone = get_current_milestone()
+#     next_milestone = get_next_milestone()
+#     created_at = datetime.datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
+#     if ms_type == 'issue':
+#         if get_remain_days_of_current_milestone(current_milestone, created_at) > 21:
+#             msg = None
+#             return current_milestone, msg
+#         else:
+#             msg = f"Hi @{author}, Since the current milestone time is less than 21 days, " \
+#                   f"this issue will be resolved in the next milestone"
+#             return next_milestone, msg
+#     # Less than a week: put into the next milestone with a warning message
+#     # More than a week: put into the current milestone
+#     if ms_type == 'pull_request':
+#         if get_remain_days_of_current_milestone(current_milestone, created_at) > 7:
+#             msg = None
+#             return current_milestone, msg
+#         else:
+#             msg = f"Hi @{author}, Since the current milestone time is less than 7 days, " \
+#                   f"this pr will be reviewed in the next milestone"
+#             return next_milestone, msg
 
 
 def get_all_milestones():
@@ -80,6 +80,25 @@ def get_next_milestone():
 
 def get_remain_days_of_current_milestone(current_milestone, created_at):
     return (current_milestone[1] - created_at).days
+
+
+def more_than_x_days(x_days):
+    current_milestone = get_current_milestone()
+    created_at = datetime.datetime.strptime(g.created_at, '%Y-%m-%dT%H:%M:%SZ')
+    if get_remain_days_of_current_milestone(current_milestone, created_at) >= x_days:
+        return True
+    else:
+        return False
+
+
+def set_milestone(milestone):
+    if milestone == 'current_milestone':
+        milestone = get_current_milestone()
+    elif milestone == 'previous_milestone':
+        milestone = get_previous_milestone()
+    elif milestone == 'next_milestone':
+        milestone = get_next_milestone()
+    update_issue(g.milestone_url, milestone=milestone)
 
 
 if __name__=='__main__':
