@@ -96,7 +96,7 @@
     {
       "taskName": "open issue",
       "taskType": "trigger",
-      "eventType": "issue",
+      "eventType": "issues",
       "eventAction": "opened",
       "conditions": [
         {
@@ -143,7 +143,7 @@
     {
       "taskName": "common issue",
       "taskType": "trigger",
-      "eventType": "issue",
+      "eventType": "issues",
       "eventAction": "opened",
       "conditions": [
         {
