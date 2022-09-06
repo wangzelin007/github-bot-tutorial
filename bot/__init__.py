@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 from apiflask import APIFlask
-from bot.extensions import db, cache
+from bot.extensions import db, cache, scheduler
 from bot.settings import config
 from bot.blueprints.github import github_bp
+
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -23,6 +24,7 @@ def create_app(config_name=None):
 def register_extensions(app):
     db.init_app(app)
     cache.init_app(app)
+    scheduler.init_app(app)
 
 
 def register_blueprints(app):

@@ -7,10 +7,10 @@ logger = logging.getLogger('bot')
 requestClient = RequestHandler()
 
 
-def comment_issue(message):
+def comment_issue(comment):
     # https://api.github.com/repos/{OWNER}/{REPO}/issues/{NUMBER}/comments
     body = {
-        'body': message,
+        'body': comment,
     }
     r = requestClient.visit('POST', g.comment_url, json=body)
 
@@ -66,5 +66,5 @@ def is_pull_request(ref):
 
 
 def get_issue(issue_url):
-    # https://api.github.com/repos/wangzelin007/github-bot-tutorial/issues/32
+    # https://api.github.com/repos/{OWNER}/{REPO}/issues/32
     return requestClient.visit('GET', issue_url)

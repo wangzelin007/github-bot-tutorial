@@ -8,7 +8,7 @@ requestClient = RequestHandler()
 
 
 def add_labels_to_issue(url, labels):
-    # https://api.github.com/repos/wangzelin007/github-bot-tutorial/issues/37/labels
+    # https://api.github.com/repos/{OWNER}/{REPO}/issues/37/labels
     # {"labels":["need-review","ready-for-merge"]}
     body = {
         "labels": labels
@@ -25,7 +25,7 @@ def remove_labels_from_issue():
 
 
 def set_labels_for_issue(url, labels):
-    # https://api.github.com/repos/wangzelin007/github-bot-tutorial/issues/37/labels
+    # https://api.github.com/repos/{OWNER}/{REPO}/issues/37/labels
     body = {
         "labels": labels
     }
