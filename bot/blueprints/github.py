@@ -17,6 +17,7 @@ import json
 import logging
 import os
 import typing as t
+from bot import scheduled
 
 
 github_bp = APIBlueprint('github', __name__)
@@ -126,7 +127,35 @@ def add_scheduled(config):
     scheduled_tasks = [task['taskType'] == 'scheduled' for task in config]
     for task in scheduled_tasks:
         # add scheduled task
-        pass
+        id = task.pop('taskName')
+        task.pop('taskType')
+        frequency = task.pop('frequency')
+        if frequency['type'] == 'date':
+            interval = {
+                "run_date": frequency['type']['run_date']
+            }
+        elif frequency['type'] == 'interval':
+            if 'seconds' in frequency:
+                seconds = frequency['seconds']
+            elif 'minutes' in frequency:
+                seconds = frequency['minutes'] * 60
+            elif 'hours' in frequency:
+                seconds = frequency['hours'] * 3600
+            elif 'days' in frequency:
+                seconds = frequency['days'] * 86400
+            interval = {
+                "seconds": seconds
+            }
+        elif frequency['type'] == 'cron':
+            interval = {
+                'year': frequency['year'],
+                'month': frequency['month'],
+                'day': frequency['day'],
+                'minute': frequency['minute'],
+            }
+        func = parse_scheduled
+        kwargs = task
+        scheduled.add_job(id, type, func, kwargs=kwargs, **interval)
 
 
 def parse_scheduled(task):
@@ -420,7 +449,7 @@ def add_config():
     database.add_config(owner, repo, config)
 
 
-@github_bp.get('/env')
+@github_bp.get('/envs')
 @github_bp.output(EnvOutSchema(many=True))
 def list_env():
     return database.list_env()
@@ -437,3 +466,31 @@ def add_env():
     issue_url: "g.config_url"
     pr_url: "g.config_url"
     return database.add_env(owner, repo, etag, config_url, base_url, issue_url, pr_url)
+
+
+@github_bp.post('/schedule')
+def add_job():
+    params = request.json
+    job_name = params['id']
+    type = params['type']
+    func = params['func']
+    args = params['args']
+    kwargs = params['kwargs']
+    interval = params['interval']
+
+    return scheduled.add_job(job_name, type, func, args, kwargs, **interval)
+
+
+@github_bp.delete('/schedule/<str:schedule_id>')
+def remove_job(schedule_id):
+    return scheduled.remove_job(schedule_id)
+
+
+@github_bp.get('/schedule/<str:schedule_id>')
+def get_job(schedule_id):
+    return scheduled.get_job(schedule_id)
+
+
+@github_bp.get('/schedules')
+def get_jobs():
+    return scheduled.get_jobs()

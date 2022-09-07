@@ -10,11 +10,6 @@ def this_job(a, b):
     print(a + b)
 
 
-def remove_job(id):
-    scheduler.remove_job(job_id=id)
-    return "job removed"
-
-
 def pause_scheduler():
     scheduler.pause()
     return "paused scheduler"
@@ -25,7 +20,7 @@ def resume_scheduler():
     return "resume scheduler"
 
 
-def start_job(id, type, func, args=None, kwargs=None,
+def add_job(id, type, func, args=None, kwargs=None,
               max_instances=2, misfire_grace_time=240, replace_existing=True, **interval):
     """
     :param int max_instances: maximum number of concurrently running instances allowed for this job
@@ -79,3 +74,15 @@ def start_job(id, type, func, args=None, kwargs=None,
 
     return "job started"
 
+
+def remove_job(id):
+    scheduler.remove_job(job_id=id)
+    return "job removed"
+
+
+def get_job(id):
+    return scheduler.get_job(job_id=id)
+
+
+def get_jobs():
+    return scheduler.get_jobs()

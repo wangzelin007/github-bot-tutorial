@@ -27,6 +27,15 @@ def add_config(owner, repo, config):
     return db_data
 
 
+def update_config(owner, repo, config):
+    if not isinstance(config, str):
+        config = json.dumps(config)
+    db_data = ConfigModel.query.filter_by(owner=owner, repo=repo).first()
+    db_data.config = config
+    db.session.commit()
+    return db_data
+
+
 def list_env():
     data = EnvModel.query.all()
     return data
