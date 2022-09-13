@@ -9,10 +9,6 @@ PASSWORD = os.getenv('BOT_DB_PASS', 'secret string')
 
 
 class BaseConfig(object):
-    SCHEDULER_JOBSTORES = {
-        'default': SQLAlchemyJobStore(
-            url=f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=DigiCertGlobalRootCA.crt.pem')
-    }
     SCHEDULER_EXECUTORS = {
         'default': {'type': 'threadpool', 'max_workers': 20}
     }
@@ -39,10 +35,18 @@ class BaseConfig(object):
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=DigiCertGlobalRootCA.crt.pem'
+    SCHEDULER_JOBSTORES = {
+        'default': SQLAlchemyJobStore(
+            url=f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=DigiCertGlobalRootCA.crt.pem')
+    }
 
 
 class ProductionConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=DigiCertGlobalRootCA.crt.pem'
+    SCHEDULER_JOBSTORES = {
+        'default': SQLAlchemyJobStore(
+            url=f'mysql+pymysql://{USERNAME}:{PASSWORD}@azure-cli-bot-db-dev.mysql.database.azure.com/azure_cli_bot_dev?ssl_ca=DigiCertGlobalRootCA.crt.pem')
+    }
 
 
 config = {

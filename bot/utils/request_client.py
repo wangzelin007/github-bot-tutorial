@@ -1,5 +1,5 @@
 import requests
-from bot.constant import HEADERS
+from bot.utils.constant import HEADERS
 import logging
 
 logger = logging.getLogger('bot')

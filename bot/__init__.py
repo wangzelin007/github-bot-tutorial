@@ -4,6 +4,7 @@ from apiflask import APIFlask
 from bot.extensions import db, cache, scheduler
 from bot.settings import config
 from bot.blueprints.github import github_bp
+from bot.blueprints.devops import devops_bp
 
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -29,3 +30,4 @@ def register_extensions(app):
 
 def register_blueprints(app):
     app.register_blueprint(github_bp)
+    app.register_blueprint(devops_bp)

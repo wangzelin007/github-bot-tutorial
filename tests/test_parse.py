@@ -1,9 +1,10 @@
 from flask import Flask, request, g
-from bot.scheduler import scheduler, Config
+from bot.scheduled import scheduler
 import os
-from bot.constant import HEADERS
+from bot.utils.constant import HEADERS
 import requests
 import json
+from bot.utils.case import to_snack_case
 
 
 app = Flask(__name__)
@@ -35,7 +36,7 @@ def get_variable(task_id, string):
         for matchNum, match in enumerate(matches, start=1):
             app.logger.info("====== find variable: %s ======" % string[match.start()+2: match.end()-1])
             variable =  string[match.start()+2: match.end()-1]
-            uq_variable = '_'.join([owner, repo, task_id, variable]).replace('-', '_')
+            uq_variable = to_snack_case('_'.join([owner, repo, task_id, variable]))
             return variable, uq_variable
 
 
@@ -338,8 +339,7 @@ def _add_job(job_id, type, seconds, func, args, kwargs):
 
 
 if __name__ == '__main__':
-    from common.log import dictConfig
-    app.config.from_object(Config())
+    # app.config.from_object(Config())
     scheduler.init_app(app)
     scheduler.start()
     app.run()

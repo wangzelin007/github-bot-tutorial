@@ -1,5 +1,5 @@
 from bot.github_api.issues import update_issue
-from bot.request_client import RequestHandler
+from bot.utils.request_client import RequestHandler
 from flask import g
 import datetime
 import logging

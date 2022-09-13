@@ -1,6 +1,6 @@
 import logging
 from bot.github_api import milestone, issues
-from bot.request_client import RequestHandler
+from bot.utils.request_client import RequestHandler
 from flask import g
 
 
