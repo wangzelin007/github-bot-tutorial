@@ -135,11 +135,14 @@ def webhook():
 
 # Azure DevOps webhook with username:password
 @app.route('/devops', methods=['POST'])
-@app.auth_required(auth)
+# @app.auth_required(auth)
 def webhook2():
     event = request.json
-    print(event)
-    logger.info("====== Run state stage changed: %s ======", event)
+    # print(event)
+    import json
+    json_event = json.dumps(event, indent=2)
+    logger.info("====== Run state stage changed:  ======")
+    logger.info(json_event)
     return 'Hello azclitools!'
 
 
