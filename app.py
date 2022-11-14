@@ -139,7 +139,7 @@ def webhook():
 def webhook2():
     event = request.json
     print(event)
-    logger.info("====== event: %s ======", event)
+    logger.info("====== Run state stage changed: %s ======", event)
     return 'Hello azclitools!'
 
 
