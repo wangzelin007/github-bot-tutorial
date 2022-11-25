@@ -1,0 +1,6 @@
+---
+- feature:
+  key: value
+  keys:
+    - value1
+    - value2
