@@ -1,4 +1,3 @@
-config:
 - feature1:
   key: value
   keys:
