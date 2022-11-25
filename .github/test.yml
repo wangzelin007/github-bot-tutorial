@@ -1,10 +1,10 @@
 ---
-- config:
+- feature1:
     key: value
     keys:
       - value1
       - value2
-- config:
+- feature2:
     key: value
     keys:
       - value1
