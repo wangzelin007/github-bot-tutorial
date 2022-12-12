@@ -1,0 +1,10 @@
+pull_request:
+  azure_pipeline:
+    allow_list:
+      - "wangzein007-azure-cli"
+    result_path: "/test_results/"
+  comment:
+    group_by_keys:
+      - "Module"
+      - "Profile"
+      - "PythonVersion"
