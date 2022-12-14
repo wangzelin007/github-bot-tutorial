@@ -1,4 +1,5 @@
-name: 'Bug report'
+---
+name: 'Bug report 2'
 about: 'Create a report to help us improve'
 
 labels:
