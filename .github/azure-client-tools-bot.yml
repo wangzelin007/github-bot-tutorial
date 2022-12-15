@@ -9,16 +9,16 @@ pull_request:
       - "Profile"
       - "PythonVersion"
 cli_common_issues:
-  enable: False
+  enable: True
   unofficial_cli:
     keywords:
       - "2.0.80"
       - "2.0.81"
       - "2.18.0"
       - "dist-packages"
-      - "2\.\d+\.\d+-\d+"
+      - "2\\.\\d+\\.\\d+-\\d+"
     solution: 'match unofficial cli'
   not_latest_cli:
     keywords:
-      - "2\.\d+\.\d+"
+      - "2\\.\\d+\\.\\d+"
     solution: 'match not latest cli'
