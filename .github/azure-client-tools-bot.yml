@@ -18,13 +18,19 @@ cli_common_issues:
       - "dist-packages"
       - "2\\.\\d+\\.\\d+-\\d+"
     solution: |
+      Hi @${author},
+
       This is not the official Azure CLI published by Microsoft (https://github.com/wangzelin007/github-bot-tutorial/issues/61).
 
       Please follow  https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt to install Microsoft official Azure CLI.
+
+      If you feel that further discussion is needed, please add a comment with the text \`/clibot unresolve\` to reopen the issue.
   not_latest_cli:
     keywords:
       - "2\\.\\d+\\.\\d+"
     solution: |
-      This is not the latest Azure CLI.
-      
+      Hi @${author},
+
+      ${currentVersion} is not the latest Azure CLI(${latestVersion}).
+
       Please upgrade to the latest Azure CLI version by following https://learn.microsoft.com/en-us/cli/azure/update-azure-cli.
