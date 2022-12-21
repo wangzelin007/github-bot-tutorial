@@ -34,3 +34,33 @@ cli_common_issues:
       ${currentVersion} is not the latest Azure CLI(${latestVersion}).
 
       Please upgrade to the latest Azure CLI version by following https://learn.microsoft.com/en-us/cli/azure/update-azure-cli.
+  latest_api_version_not_available:
+    keywords:
+      - "No registered resource provider found"
+    solution: |
+      Hi @${author},
+
+      This is a known issue.
+
+      Please follow https://github.com/Azure/azure-cli/issues/23985#issue-1383263012 to get temporary workaround.
+  az_login_fails:
+    keywords:
+      - "WinError 0"
+      - "WinError -2146893813"
+      - "WinError -2146892987"
+      - "WinError 87"
+    solution: |
+      Hi @${author},
+
+      This is a known issue.
+
+      Please follow https://github.com/Azure/azure-cli/issues/20231#issuecomment-1007176901 to get workaround.
+  cloud_shell_fails:
+    keywords:
+      - "\[Errno 30\]"
+    solution: |
+      Hi @${author},
+
+      This is a known issue.
+
+      Please follow https://github.com/Azure/azure-cli/issues/13855#issuecomment-722412068 to get workaround.
