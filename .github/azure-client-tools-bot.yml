@@ -24,7 +24,7 @@ cli_common_issues:
 
       Please follow  https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt to install Microsoft official Azure CLI.
 
-      If you feel that further discussion is needed, please add a comment with the text \`/clibot unresolve\` to reopen the issue.
+      If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
   not_latest_cli:
     keywords:
       - "2\\.\\d+\\.\\d+"
