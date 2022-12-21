@@ -17,8 +17,8 @@ cli_common_issues:
       - "2.18.0"
       - "dist-packages"
       - "2\\.\\d+\\.\\d+-\\d+"
-    solution: 'match unofficial cli'
+    solution: 'This is not the official Azure CLI published by Microsoft (#19640).\nPlease follow  https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt to install Microsoft official Azure CLI.\n'
   not_latest_cli:
     keywords:
       - "2\\.\\d+\\.\\d+"
-    solution: 'match not latest cli'
+    solution: 'This is not the latest Azure CLI.\nPlease upgrade to the latest Azure CLI version by following https://learn.microsoft.com/en-us/cli/azure/update-azure-cli.\n'
