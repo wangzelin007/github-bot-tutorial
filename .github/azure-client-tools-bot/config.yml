@@ -1,0 +1,65 @@
+pull_request:
+  azure_pipeline:
+    allow_list:
+      - "wangzein007-azure-cli"
+    result_path: "/test_results/"
+  comment:
+    group_by_keys:
+      - "Module"
+      - "Profile"
+      - "PythonVersion"
+cli_common_issues:
+  enable: True
+  unofficial_cli:
+    keywords:
+      - "2.0.80"
+      - "2.0.81"
+      - "2.18.0"
+      - "dist-packages"
+    solution: |
+      Hi @${author},
+
+      This is not the official Azure CLI published by Microsoft (https://github.com/wangzelin007/github-bot-tutorial/issues/61).
+
+      Please follow  https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt to install Microsoft official Azure CLI.
+
+      If you feel that further discussion is needed, please add a comment with the text `/clibot unresolve` to reopen the issue.
+  not_latest_cli:
+    keywords:
+      - "azure-cli[^0-9a-z\n]*(2\\.\\d+\\.\\d+)"
+    solution: |
+      Hi @${author},
+
+      ${currentVersion} is not the latest Azure CLI(${latestVersion}).
+
+      Please upgrade to the latest Azure CLI version by following https://learn.microsoft.com/en-us/cli/azure/update-azure-cli.
+  latest_api_version_not_available:
+    keywords:
+      - "No registered resource provider found"
+    solution: |
+      Hi @${author},
+
+      This is a known issue.
+
+      Please follow https://github.com/Azure/azure-cli/issues/23985#issue-1383263012 to get temporary workaround.
+  az_login_fails:
+    keywords:
+      - "WinError 0"
+      - "WinError -2146893813"
+      - "WinError -2146892987"
+      - "WinError 87"
+    solution: |
+      Hi @${author},
+
+      This is a known issue.
+
+      Please follow https://github.com/Azure/azure-cli/issues/20231#issuecomment-1007176901 to get workaround.
+  cloud_shell_fails:
+    keywords:
+      - "\[Errno 30\]"
+    solution: |
+      Hi @${author},
+
+      This is a known issue.
+
+      Please follow https://github.com/Azure/azure-cli/issues/13855#issuecomment-722412068 to get workaround.
