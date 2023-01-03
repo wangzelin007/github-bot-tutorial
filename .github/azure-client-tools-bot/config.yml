@@ -1,13 +1,15 @@
 pull_request:
-  azure_pipeline:
-    allow_list:
-      - "wangzein007-azure-cli"
-    result_path: "/test_results/"
   comment:
-    group_by_keys:
-      - "Module"
-      - "Profile"
-      - "PythonVersion"
+    - azure_pipeline:
+        allow_list:
+          - "wangzein007-azure-cli"
+        result_path: "/test_results/"
+      group_by_keys:
+        - "Module"
+        - "Profile"
+        - "PythonVersion"
+      template_path: "templates/comment1.handlebars"
+      comment_title: "AzureCLI-FullTest"
 cli_common_issues:
   enable: True
   unofficial_cli:
