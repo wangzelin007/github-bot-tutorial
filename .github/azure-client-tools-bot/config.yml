@@ -10,6 +10,8 @@ pull_request:
         - "PythonVersion"
       template_path: "templates/comment1.handlebars"
       comment_title: "AzureCLI-FullTest"
+      init_comment: |
+        Azure.azure-cli Full Test testing in progress.
 cli_common_issues:
   enable: True
   issues:
