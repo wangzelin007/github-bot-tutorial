@@ -1,3 +1,4 @@
+similar_issue: true
 auto_choose_milestone:
   enable: True
   issue_expected_days: 7
