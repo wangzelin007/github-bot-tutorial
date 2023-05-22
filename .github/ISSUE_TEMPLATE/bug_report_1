@@ -79,7 +79,7 @@ body:
     attributes:
       label: Environment Summary
       description: Please provide the out of `az --version`.
-      placeholder: |
+      placeholder: >
         azure-cli                         2.48.1
 
         core                              2.48.1
